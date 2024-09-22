@@ -4,16 +4,21 @@
  */
 package controller;
 
+import java.io.IOException;
 import javax.swing.JOptionPane;
+import model.MalhaTableModel;
 import view.ExecucaoMalha;
 import view.SelecaoMalha;
+
 /**
  *
  * @author Pichau
  */
 public class SelecaoMalhaController {
+
     private SelecaoMalha telaSelecao;
     private String malhaSelecionada;
+    private MalhaTableModel malhaTableModel;
 
     public SelecaoMalhaController(SelecaoMalha tela) {
         this.telaSelecao = tela;
@@ -21,44 +26,50 @@ public class SelecaoMalhaController {
         acaoSelecionarMalha(1);
         inicializarBotoes();
     }
-    
-    
-    
-    public void exibirTela(){
+
+    public void exibirTela() {
         telaSelecao.exibirTela();
     }
-    
-    public void fecharTela(){
+
+    public void fecharTela() {
         telaSelecao.fecharTela();
     }
-    
-    public void acaoBotaoConfirmar(){
+
+    public void acaoBotaoConfirmar() {
         ExecucaoMalhaController execucaoMalhaController = new ExecucaoMalhaController(new ExecucaoMalha(), malhaSelecionada);
         execucaoMalhaController.exibirTela();
         fecharTela();
     }
-    
-    public void acaoSelecionarMalha(int opcao){
-          switch (opcao) {
-            case 1:
-                telaSelecao.redimensionarImagem("/images/malha1.png");
-                setMalhaSelecionada("/images/malha1.png");
-                break;
-            case 2:
-                telaSelecao.redimensionarImagem("/images/malha2.png");
-                setMalhaSelecionada("/images/malha2.png");
-                break;
-            case 3:
-                telaSelecao.redimensionarImagem("/images/malha3.png");
-                setMalhaSelecionada("/images/malha3.png");
-                break;
-            default:
-                break;
+
+    public void acaoSelecionarMalha(int opcao) {
+        try {
+            switch (opcao) {
+                case 1:
+                    malhaSelecionada = "src/files/malha1.txt";  // Caminho do arquivo de configuração da malha 1
+                    break;
+                case 2:
+                    malhaSelecionada = "src/files/malha2.txt";  // Caminho do arquivo de configuração da malha 2
+                    break;
+                case 3:
+                    malhaSelecionada = "src/files/malha3.txt";  // Caminho do arquivo de configuração da malha 3
+                    break;
+                default:
+                    throw new IllegalArgumentException("Opção inválida de malha");
+            }
+
+            // Atualiza a malha selecionada
+            setMalhaSelecionada(malhaSelecionada);
+
+            // Carregar a malha no MalhaTableModel e definir na tabela
+            malhaTableModel = new MalhaTableModel(malhaSelecionada);
+            telaSelecao.setTableModel(malhaTableModel);  // Atualiza a tabela com o novo modelo
+
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Erro ao carregar a malha: " + e.getMessage());
         }
     }
-    
 
-    private void inicializarBotoes() {
+private void inicializarBotoes() {
         telaSelecao.adicionarAcaoBotaoConfirmar(acao -> acaoBotaoConfirmar());
         telaSelecao.adicionarAcaoRadioMalha1(acao -> acaoSelecionarMalha(1));
         telaSelecao.adicionarAcaoRadioMalha2(acao -> acaoSelecionarMalha(2));
@@ -73,6 +84,13 @@ public class SelecaoMalhaController {
         this.malhaSelecionada = malhaSelecionada;
     }
     
+    public void setMalhaTableModel(MalhaTableModel malhaTableModel) {
+    this.malhaTableModel = malhaTableModel;
     
+    // Define o modelo da tabela
+    telaSelecao.setTableModel(malhaTableModel);
+    telaSelecao.getTableMalha().setTableHeader(null);
+}
+
     
 }

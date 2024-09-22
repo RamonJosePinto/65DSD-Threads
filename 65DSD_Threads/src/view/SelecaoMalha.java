@@ -12,58 +12,97 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 
 import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import model.MalhaTableModel;
 
 /**
  *
  * @author Pichau
  */
 public class SelecaoMalha extends javax.swing.JFrame {
+
     /**
      * Creates new form NewJFrame
      */
     public SelecaoMalha() {
         initComponents();
-    }
-    
-        public void adicionarAcaoBotaoConfirmar(ActionListener acao){
-            buttonConfirm.addActionListener(acao);
-        }
-        
-        public void adicionarAcaoRadioMalha1(ActionListener acao){
-            radioMalha1.addActionListener(acao);
-        }
-        
-        public void adicionarAcaoRadioMalha2(ActionListener acao){
-            radioMalha2.addActionListener(acao);
-        }
-        
-        public void adicionarAcaoRadioMalha3(ActionListener acao){
-            radioMalha3.addActionListener(acao);
-        }
-        
-        public JButton getBtnMalhaImagem(){
-            return btnMalhaImagem;
-        }
-        
-        public JRadioButton getRadioMalha1(){
-            return radioMalha1;
-        }
+        ScrollPaneMalha.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        ScrollPaneMalha.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        tableMalha.setFillsViewportHeight(true);
+        tableMalha.setDefaultRenderer(Object.class, new MalhaCellRenderer());
 
-        public void exibirTela(){
-            setVisible(true);
-        }
-        
-         public void fecharTela(){
-            setVisible(false);
-        }
-         
-       
-        public void redimensionarImagem(String imagePath) {
-        ImageIcon icon = new ImageIcon(getClass().getResource(imagePath));
-        Image image = icon.getImage().getScaledInstance(btnMalhaImagem.getWidth(), btnMalhaImagem.getHeight(), Image.SCALE_SMOOTH);
-        btnMalhaImagem.setIcon(new ImageIcon(image));
     }
-    
+
+    public void adicionarAcaoBotaoConfirmar(ActionListener acao) {
+        buttonConfirm.addActionListener(acao);
+    }
+
+    public void adicionarAcaoRadioMalha1(ActionListener acao) {
+        radioMalha1.addActionListener(acao);
+    }
+
+    public void adicionarAcaoRadioMalha2(ActionListener acao) {
+        radioMalha2.addActionListener(acao);
+    }
+
+    public void adicionarAcaoRadioMalha3(ActionListener acao) {
+        radioMalha3.addActionListener(acao);
+    }
+
+    public JTable getTableMalha() {
+        return tableMalha;
+    }
+
+    public JRadioButton getRadioMalha1() {
+        return radioMalha1;
+    }
+
+    public void exibirTela() {
+        setVisible(true);
+    }
+
+    public void fecharTela() {
+        setVisible(false);
+    }
+
+    public void setTableModel(MalhaTableModel malhaTableModel) {
+    tableMalha.setModel(malhaTableModel);
+
+    // Remover o cabeçalho da tabela
+    tableMalha.setTableHeader(null);
+
+    // Ajustar para preencher todo o espaço disponível no JScrollPane
+    ajustarTamanhoCelulas();
+}
+
+// Método para ajustar dinamicamente o tamanho das células
+private void ajustarTamanhoCelulas() {
+    // Definir o tamanho desejado do JScrollPane (exemplo de 650x650 máximo)
+    int larguraDisponivel = Math.min(ScrollPaneMalha.getWidth(), 650);
+    int alturaDisponivel = Math.min(ScrollPaneMalha.getHeight(), 650);
+
+    // Número de linhas e colunas
+    int numLinhas = tableMalha.getRowCount();
+    int numColunas = tableMalha.getColumnCount();
+
+    // Calcular a largura e altura das células
+    int larguraColuna = larguraDisponivel / numColunas;
+    int alturaLinha = alturaDisponivel / numLinhas;
+
+    // Redimensionar as colunas
+    for (int i = 0; i < numColunas; i++) {
+        tableMalha.getColumnModel().getColumn(i).setPreferredWidth(larguraColuna);
+    }
+
+    // Redimensionar as linhas
+    tableMalha.setRowHeight(alturaLinha);
+
+    // Ajustar para que a tabela preencha todo o espaço do viewport
+    tableMalha.setFillsViewportHeight(true);
+}
+
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -78,11 +117,17 @@ public class SelecaoMalha extends javax.swing.JFrame {
         radioMalha1 = new javax.swing.JRadioButton();
         radioMalha2 = new javax.swing.JRadioButton();
         radioMalha3 = new javax.swing.JRadioButton();
-        btnMalhaImagem = new javax.swing.JButton();
+        ScrollPaneMalha = new javax.swing.JScrollPane();
+        tableMalha = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         buttonConfirm.setText("Confirmar");
+        buttonConfirm.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonConfirmActionPerformed(evt);
+            }
+        });
 
         buttonGroup1.add(radioMalha1);
         radioMalha1.setText("Malha1");
@@ -103,40 +148,56 @@ public class SelecaoMalha extends javax.swing.JFrame {
         buttonGroup1.add(radioMalha3);
         radioMalha3.setText("Malha3");
 
+        tableMalha.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        tableMalha.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
+        tableMalha.setTableHeader(null);
+        ScrollPaneMalha.setViewportView(tableMalha);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(86, Short.MAX_VALUE)
+                .addGap(14, 14, 14)
+                .addComponent(ScrollPaneMalha, javax.swing.GroupLayout.PREFERRED_SIZE, 665, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 14, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(203, 203, 203)
                         .addComponent(radioMalha1)
                         .addGap(41, 41, 41)
                         .addComponent(radioMalha2)
                         .addGap(43, 43, 43)
-                        .addComponent(radioMalha3)
-                        .addGap(152, 152, 152))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(buttonConfirm, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(195, 195, 195))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(btnMalhaImagem, javax.swing.GroupLayout.PREFERRED_SIZE, 421, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(81, 81, 81))))
+                        .addComponent(radioMalha3))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(252, 252, 252)
+                        .addComponent(buttonConfirm, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(33, Short.MAX_VALUE)
-                .addComponent(btnMalhaImagem, javax.swing.GroupLayout.PREFERRED_SIZE, 364, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(27, 27, 27)
+                .addGap(17, 17, 17)
+                .addComponent(ScrollPaneMalha, javax.swing.GroupLayout.PREFERRED_SIZE, 665, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(radioMalha1)
                     .addComponent(radioMalha2)
                     .addComponent(radioMalha3))
-                .addGap(41, 41, 41)
+                .addGap(18, 18, 18)
                 .addComponent(buttonConfirm, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(26, 26, 26))
+                .addContainerGap(29, Short.MAX_VALUE))
         );
 
         pack();
@@ -149,6 +210,10 @@ public class SelecaoMalha extends javax.swing.JFrame {
     private void radioMalha2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioMalha2ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_radioMalha2ActionPerformed
+
+    private void buttonConfirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonConfirmActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_buttonConfirmActionPerformed
 
     /**
      * @param args the command line arguments
@@ -189,11 +254,12 @@ public class SelecaoMalha extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnMalhaImagem;
+    private javax.swing.JScrollPane ScrollPaneMalha;
     private javax.swing.JButton buttonConfirm;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JRadioButton radioMalha1;
     private javax.swing.JRadioButton radioMalha2;
     private javax.swing.JRadioButton radioMalha3;
+    private javax.swing.JTable tableMalha;
     // End of variables declaration//GEN-END:variables
 }

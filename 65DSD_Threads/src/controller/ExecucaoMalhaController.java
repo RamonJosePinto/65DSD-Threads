@@ -5,39 +5,64 @@
 package controller;
 
 import java.awt.Image;
+import java.io.IOException;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
+import model.MalhaTableModel;
 import view.ExecucaoMalha;
+
 /**
  *
  * @author Pichau
  */
 public class ExecucaoMalhaController {
-    private ExecucaoMalha telaExecucao;
-    private String malhaSelecioanda;
 
-    public ExecucaoMalhaController(ExecucaoMalha telaExecucao, String malhaSelecioanda) {
+    private ExecucaoMalha telaExecucao;
+    private String malhaSelecionada;
+    private MalhaTableModel malhaTableModel;
+
+    public ExecucaoMalhaController(ExecucaoMalha telaExecucao, String malhaSelecionada) {
         this.telaExecucao = telaExecucao;
-        this.malhaSelecioanda = malhaSelecioanda;
-        
-        adicionarAcaoBtnMalhaImagem();
+        this.malhaSelecionada = malhaSelecionada;
+        inicializarTabela();
     }
-    
-    public void exibirTela(){
+
+    public void inicializarTabela() {
+        try {
+            setMalhaSelecionada(malhaSelecionada);
+            malhaTableModel = new MalhaTableModel(malhaSelecionada);
+            telaExecucao.setTableModel(malhaTableModel);  // Atualiza a tabela com o novo modelo
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Erro ao carregar a malha: " + e.getMessage());
+        }
+    }
+
+    public void exibirTela() {
         telaExecucao.exibirTela();
     }
-    
-    public void fecharTela(){
+
+    public void fecharTela() {
         telaExecucao.fecharTela();
     }
-    
-    public void adicionarAcaoBtnMalhaImagem(){
-        ImageIcon icon = new ImageIcon(getClass().getResource(malhaSelecioanda));
-         Image image = icon.getImage().getScaledInstance(telaExecucao.getBtnMalhaImagem().getWidth(), telaExecucao.getBtnMalhaImagem().getHeight(), Image.SCALE_SMOOTH);
-        telaExecucao.getBtnMalhaImagem().setIcon(new ImageIcon(image));
+
+    public String getMalhaSelecionada() {
+        return malhaSelecionada;
     }
-    
+
+    public void setMalhaSelecionada(String malhaSelecionada) {
+        this.malhaSelecionada = malhaSelecionada;
+    }
+
+    public void setMalhaTableModel(MalhaTableModel malhaTableModel) {
+        this.malhaTableModel = malhaTableModel;
+
+        // Define o modelo da tabela
+        telaExecucao.setTableModel(malhaTableModel);
+        telaExecucao.getTableMalha().setTableHeader(null);
+    }
+
     private void inicializarBotoes() {
-        
+
     }
-    
+
 }
