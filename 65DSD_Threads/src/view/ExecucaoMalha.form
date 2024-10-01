@@ -39,16 +39,16 @@
                           <Group type="102" attributes="0">
                               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
-                              <Component id="jSpinner1" min="-2" pref="155" max="-2" attributes="0"/>
+                              <Component id="jsQtdVeiculos" min="-2" pref="155" max="-2" attributes="0"/>
                           </Group>
                           <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
-                              <Component id="jButton5" alignment="0" max="32767" attributes="0"/>
-                              <Component id="jButton4" alignment="0" max="32767" attributes="0"/>
-                              <Component id="jButton3" alignment="0" max="32767" attributes="0"/>
+                              <Component id="jbEncerrarSimulacao" alignment="0" max="32767" attributes="0"/>
+                              <Component id="jbEncerrarInsercao" alignment="0" max="32767" attributes="0"/>
+                              <Component id="jbIniciarSimulacao" alignment="0" max="32767" attributes="0"/>
                               <Group type="102" alignment="0" attributes="0">
                                   <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                  <Component id="jSpinner2" min="-2" pref="155" max="-2" attributes="0"/>
+                                  <Component id="jsIntervalo" min="-2" pref="155" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                       </Group>
@@ -67,19 +67,19 @@
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jSpinner1" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jsQtdVeiculos" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jSpinner2" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jsIntervalo" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
-              <Component id="jButton3" min="-2" pref="39" max="-2" attributes="0"/>
+              <Component id="jbIniciarSimulacao" min="-2" pref="39" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Component id="jButton4" min="-2" pref="40" max="-2" attributes="0"/>
+              <Component id="jbEncerrarInsercao" min="-2" pref="40" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Component id="jButton5" min="-2" pref="40" max="-2" attributes="0"/>
+              <Component id="jbEncerrarSimulacao" min="-2" pref="40" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
@@ -91,26 +91,26 @@
         <Property name="text" type="java.lang.String" value="Quantidade de v&#xe9;iculos:"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JSpinner" name="jSpinner1">
+    <Component class="javax.swing.JSpinner" name="jsQtdVeiculos">
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel2">
       <Properties>
         <Property name="text" type="java.lang.String" value="Intervalo de inser&#xe7;&#xe3;o (ms):"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JSpinner" name="jSpinner2">
+    <Component class="javax.swing.JSpinner" name="jsIntervalo">
     </Component>
-    <Component class="javax.swing.JButton" name="jButton3">
+    <Component class="javax.swing.JButton" name="jbIniciarSimulacao">
       <Properties>
         <Property name="text" type="java.lang.String" value="Iniciar simula&#xe7;&#xe3;o"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="jButton4">
+    <Component class="javax.swing.JButton" name="jbEncerrarInsercao">
       <Properties>
         <Property name="text" type="java.lang.String" value="Encerrar inser&#xe7;&#xe3;o"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="jButton5">
+    <Component class="javax.swing.JButton" name="jbEncerrarSimulacao">
       <Properties>
         <Property name="text" type="java.lang.String" value="Encerrar simula&#xe7;&#xe3;o"/>
       </Properties>

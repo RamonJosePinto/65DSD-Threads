@@ -4,16 +4,13 @@
  */
 package view;
 
-import controller.SelecaoMalhaController;
-import java.awt.Image;
-import javax.swing.ImageIcon;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JButton;
 
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+
+import model.MalhaCellRenderer;
 import model.MalhaTableModel;
 
 /**
@@ -69,16 +66,12 @@ public class SelecaoMalha extends javax.swing.JFrame {
     public void setTableModel(MalhaTableModel malhaTableModel) {
     tableMalha.setModel(malhaTableModel);
 
-    // Remover o cabeçalho da tabela
     tableMalha.setTableHeader(null);
-
-    // Ajustar para preencher todo o espaço disponível no JScrollPane
     ajustarTamanhoCelulas();
 }
 
 // Método para ajustar dinamicamente o tamanho das células
 private void ajustarTamanhoCelulas() {
-    // Definir o tamanho desejado do JScrollPane (exemplo de 650x650 máximo)
     int larguraDisponivel = Math.min(ScrollPaneMalha.getWidth(), 650);
     int alturaDisponivel = Math.min(ScrollPaneMalha.getHeight(), 650);
 

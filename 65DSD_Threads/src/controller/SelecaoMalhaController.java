@@ -45,13 +45,13 @@ public class SelecaoMalhaController {
         try {
             switch (opcao) {
                 case 1:
-                    malhaSelecionada = "src/files/malha1.txt";  // Caminho do arquivo de configuração da malha 1
+                    malhaSelecionada = "src/files/malha1.txt";
                     break;
                 case 2:
-                    malhaSelecionada = "src/files/malha2.txt";  // Caminho do arquivo de configuração da malha 2
+                    malhaSelecionada = "src/files/malha2.txt";
                     break;
                 case 3:
-                    malhaSelecionada = "src/files/malha3.txt";  // Caminho do arquivo de configuração da malha 3
+                    malhaSelecionada = "src/files/malha3.txt";
                     break;
                 default:
                     throw new IllegalArgumentException("Opção inválida de malha");
@@ -62,7 +62,7 @@ public class SelecaoMalhaController {
 
             // Carregar a malha no MalhaTableModel e definir na tabela
             malhaTableModel = new MalhaTableModel(malhaSelecionada);
-            telaSelecao.setTableModel(malhaTableModel);  // Atualiza a tabela com o novo modelo
+            telaSelecao.setTableModel(malhaTableModel);
 
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Erro ao carregar a malha: " + e.getMessage());

@@ -6,10 +6,18 @@ package controller;
 
 import java.awt.Image;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+
+import model.Carro;
+import model.EstradaCelula;
 import model.MalhaTableModel;
 import view.ExecucaoMalha;
+
+import static java.lang.Thread.sleep;
 
 /**
  *
@@ -20,18 +28,27 @@ public class ExecucaoMalhaController {
     private ExecucaoMalha telaExecucao;
     private String malhaSelecionada;
     private MalhaTableModel malhaTableModel;
+    private int qtdVeiculos;
+    private List<Carro> veiculosMalha;
+    private int intervalo;
+    private Random random;
+    private boolean simulacaoAtiva;
 
     public ExecucaoMalhaController(ExecucaoMalha telaExecucao, String malhaSelecionada) {
         this.telaExecucao = telaExecucao;
         this.malhaSelecionada = malhaSelecionada;
         inicializarTabela();
+        this.veiculosMalha = new ArrayList<>();
+        this.random = new Random();
     }
+
 
     public void inicializarTabela() {
         try {
             setMalhaSelecionada(malhaSelecionada);
             malhaTableModel = new MalhaTableModel(malhaSelecionada);
-            telaExecucao.setTableModel(malhaTableModel);  // Atualiza a tabela com o novo modelo
+            telaExecucao.setTableModel(malhaTableModel);
+            inicializarBotoes();
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Erro ao carregar a malha: " + e.getMessage());
         }
@@ -56,13 +73,67 @@ public class ExecucaoMalhaController {
     public void setMalhaTableModel(MalhaTableModel malhaTableModel) {
         this.malhaTableModel = malhaTableModel;
 
-        // Define o modelo da tabela
+
         telaExecucao.setTableModel(malhaTableModel);
         telaExecucao.getTableMalha().setTableHeader(null);
     }
 
-    private void inicializarBotoes() {
+    public void acaoIniciarSimulacao() {
+        this.qtdVeiculos = telaExecucao.getQtdVeiculos();
+        this.intervalo = telaExecucao.getIntervalo();
 
+        List<EstradaCelula> entradas = malhaTableModel.getPontosDeEntrada();
+
+        try {
+            if (!(veiculosMalha.size() == qtdVeiculos)) {
+                simulacaoAtiva = true;
+                for (int i = 0; i < qtdVeiculos && simulacaoAtiva; i++) {
+                    EstradaCelula estradaEntrada = entradas.get(random.nextInt(entradas.size()));
+
+                    int velocidade = (5 + random.nextInt(6)) * 1000;
+                    Carro carro = new Carro(velocidade, estradaEntrada);
+                    estradaEntrada.setCarro(carro);
+                    veiculosMalha.add(carro);
+
+                    // Atualiza a célula para exibir o carro
+                    estradaEntrada.getMalha().fireTableCellUpdated(estradaEntrada.getLin(), estradaEntrada.getCol());
+
+
+                    carro.start();
+                    sleep(intervalo);
+                }
+            }
+        } catch (InterruptedException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void acaoEncerrarInsercao(){
+
+    }
+
+    public void acaoEncerrarSimulacao(){
+        simulacaoAtiva = false;
+
+        for (Carro carro : veiculosMalha) {
+            carro.interrupt();
+        }
+    }
+
+    public void acaoAlterarQtdVeiculos(){
+
+    }
+
+    public void acaoAlterarIntervalo(){
+
+    }
+
+    private void inicializarBotoes() {
+        telaExecucao.adicionarAcaoBotaoIniciarSimulacao(acao -> acaoIniciarSimulacao());
+        telaExecucao.adicionarAcaoBotaoEncerrarInsercao(acao -> acaoEncerrarInsercao());
+        telaExecucao.adicionarAcaoBotaoEncerrarSimulacao(acao -> acaoEncerrarSimulacao());
+        telaExecucao.adicionarAcaoSpinnerQtdVeiculos(acao -> acaoAlterarQtdVeiculos());
+        telaExecucao.adicionarAcaoSpinnerIntervalo(acao -> acaoAlterarIntervalo());
     }
 
 }

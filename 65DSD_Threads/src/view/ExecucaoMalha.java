@@ -4,11 +4,14 @@
  */
 package view;
 
-import java.awt.event.ActionListener;
-import javax.swing.JButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.event.ChangeListener;
+
+import model.MalhaCellRenderer;
 import model.MalhaTableModel;
+
+import java.awt.event.ActionListener;
 
 /**
  *
@@ -27,6 +30,25 @@ public class ExecucaoMalha extends javax.swing.JFrame {
         tableMalha.setDefaultRenderer(Object.class, new MalhaCellRenderer());
     }
 
+    public void adicionarAcaoBotaoIniciarSimulacao(ActionListener acao){
+        jbIniciarSimulacao.addActionListener(acao);
+    }
+
+    public void adicionarAcaoBotaoEncerrarInsercao(ActionListener acao){
+        jbEncerrarInsercao.addActionListener(acao);
+    }
+
+    public void adicionarAcaoBotaoEncerrarSimulacao(ActionListener acao){
+        jbEncerrarSimulacao.addActionListener(acao);
+    }
+
+    public void adicionarAcaoSpinnerQtdVeiculos(ChangeListener acao){
+        jsQtdVeiculos.addChangeListener(acao);
+    }
+    public void adicionarAcaoSpinnerIntervalo(ChangeListener acao){
+        jsIntervalo.addChangeListener(acao);
+    }
+
     public void setTableModel(MalhaTableModel malhaTableModel) {
         tableMalha.setModel(malhaTableModel);
 
@@ -39,6 +61,14 @@ public class ExecucaoMalha extends javax.swing.JFrame {
 
     public JTable getTableMalha() {
         return tableMalha;
+    }
+
+    public int getQtdVeiculos(){
+        return (Integer) jsQtdVeiculos.getValue();
+    }
+
+    public int getIntervalo(){
+        return (Integer) jsIntervalo.getValue();
     }
 
     // Método para ajustar dinamicamente o tamanho das células
@@ -86,12 +116,12 @@ public class ExecucaoMalha extends javax.swing.JFrame {
 
         jButton1 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
-        jSpinner1 = new javax.swing.JSpinner();
+        jsQtdVeiculos = new javax.swing.JSpinner();
         jLabel2 = new javax.swing.JLabel();
-        jSpinner2 = new javax.swing.JSpinner();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
+        jsIntervalo = new javax.swing.JSpinner();
+        jbIniciarSimulacao = new javax.swing.JButton();
+        jbEncerrarInsercao = new javax.swing.JButton();
+        jbEncerrarSimulacao = new javax.swing.JButton();
         ScrollPaneMalha = new javax.swing.JScrollPane();
         tableMalha = new javax.swing.JTable();
 
@@ -103,11 +133,11 @@ public class ExecucaoMalha extends javax.swing.JFrame {
 
         jLabel2.setText("Intervalo de inserção (ms):");
 
-        jButton3.setText("Iniciar simulação");
+        jbIniciarSimulacao.setText("Iniciar simulação");
 
-        jButton4.setText("Encerrar inserção");
+        jbEncerrarInsercao.setText("Encerrar inserção");
 
-        jButton5.setText("Encerrar simulação");
+        jbEncerrarSimulacao.setText("Encerrar simulação");
 
         tableMalha.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -137,15 +167,15 @@ public class ExecucaoMalha extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel1)
                                 .addGap(28, 28, 28)
-                                .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jsQtdVeiculos, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(jButton5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jButton4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jButton3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jbEncerrarSimulacao, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jbEncerrarInsercao, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jbIniciarSimulacao, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                     .addComponent(jLabel2)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(jSpinner2, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                    .addComponent(jsIntervalo, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -157,17 +187,17 @@ public class ExecucaoMalha extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jsQtdVeiculos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jSpinner2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jsIntervalo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jbIniciarSimulacao, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jbEncerrarInsercao, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jbEncerrarSimulacao, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -213,13 +243,13 @@ public class ExecucaoMalha extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane ScrollPaneMalha;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JSpinner jSpinner1;
-    private javax.swing.JSpinner jSpinner2;
+    private javax.swing.JButton jbEncerrarInsercao;
+    private javax.swing.JButton jbEncerrarSimulacao;
+    private javax.swing.JButton jbIniciarSimulacao;
+    private javax.swing.JSpinner jsIntervalo;
+    private javax.swing.JSpinner jsQtdVeiculos;
     private javax.swing.JTable tableMalha;
     // End of variables declaration//GEN-END:variables
 }
