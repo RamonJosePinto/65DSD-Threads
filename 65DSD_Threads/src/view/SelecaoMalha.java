@@ -47,6 +47,10 @@ public class SelecaoMalha extends javax.swing.JFrame {
         radioMalha3.addActionListener(acao);
     }
 
+    public void adicionarAcaoRadioExclusaoMutua1(ActionListener acao) {rbExclusaoMutua1.addActionListener(acao);}
+
+    public void adicionarAcaoRadioExclusaoMutua2(ActionListener acao) {rbExclusaoMutua2.addActionListener(acao);}
+
     public JTable getTableMalha() {
         return tableMalha;
     }
@@ -61,6 +65,10 @@ public class SelecaoMalha extends javax.swing.JFrame {
 
     public void fecharTela() {
         setVisible(false);
+    }
+
+    public void setDefaultRadioButtonSelected(){
+        rbExclusaoMutua1.setSelected(true);
     }
 
     public void setTableModel(MalhaTableModel malhaTableModel) {
@@ -106,12 +114,17 @@ private void ajustarTamanhoCelulas() {
     private void initComponents() {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
+        exclusaoMutuaGroup = new javax.swing.ButtonGroup();
         buttonConfirm = new javax.swing.JButton();
         radioMalha1 = new javax.swing.JRadioButton();
         radioMalha2 = new javax.swing.JRadioButton();
         radioMalha3 = new javax.swing.JRadioButton();
         ScrollPaneMalha = new javax.swing.JScrollPane();
         tableMalha = new javax.swing.JTable();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        rbExclusaoMutua1 = new javax.swing.JRadioButton();
+        rbExclusaoMutua2 = new javax.swing.JRadioButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -156,41 +169,75 @@ private void ajustarTamanhoCelulas() {
         tableMalha.setTableHeader(null);
         ScrollPaneMalha.setViewportView(tableMalha);
 
+        jLabel1.setText("Malha a ser utilizada");
+
+        jLabel2.setText("Sistema de exclusão mutua a ser usado");
+
+        exclusaoMutuaGroup.add(rbExclusaoMutua1);
+        rbExclusaoMutua1.setText("Semaforos");
+        rbExclusaoMutua1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rbExclusaoMutua1ActionPerformed(evt);
+            }
+        });
+
+        exclusaoMutuaGroup.add(rbExclusaoMutua2);
+        rbExclusaoMutua2.setText("Monitores");
+        rbExclusaoMutua2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rbExclusaoMutua2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(14, 14, 14)
-                .addComponent(ScrollPaneMalha, javax.swing.GroupLayout.PREFERRED_SIZE, 665, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 14, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(203, 203, 203)
-                        .addComponent(radioMalha1)
-                        .addGap(41, 41, 41)
-                        .addComponent(radioMalha2)
-                        .addGap(43, 43, 43)
-                        .addComponent(radioMalha3))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(252, 252, 252)
-                        .addComponent(buttonConfirm, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(250, 250, 250)
+                .addComponent(buttonConfirm, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(14, 14, 14)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(radioMalha1)
+                            .addGap(41, 41, 41)
+                            .addComponent(radioMalha2)
+                            .addGap(43, 43, 43)
+                            .addComponent(radioMalha3))
+                        .addComponent(ScrollPaneMalha, javax.swing.GroupLayout.PREFERRED_SIZE, 665, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addGap(352, 352, 352)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(rbExclusaoMutua1)
+                                .addGap(18, 18, 18)
+                                .addComponent(rbExclusaoMutua2))
+                            .addComponent(jLabel2))))
+                .addGap(0, 14, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(17, 17, 17)
                 .addComponent(ScrollPaneMalha, javax.swing.GroupLayout.PREFERRED_SIZE, 665, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(radioMalha1)
                     .addComponent(radioMalha2)
-                    .addComponent(radioMalha3))
+                    .addComponent(radioMalha3)
+                    .addComponent(rbExclusaoMutua1)
+                    .addComponent(rbExclusaoMutua2))
                 .addGap(18, 18, 18)
                 .addComponent(buttonConfirm, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(29, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
@@ -207,6 +254,14 @@ private void ajustarTamanhoCelulas() {
     private void buttonConfirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonConfirmActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_buttonConfirmActionPerformed
+
+    private void rbExclusaoMutua1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbExclusaoMutua1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_rbExclusaoMutua1ActionPerformed
+
+    private void rbExclusaoMutua2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbExclusaoMutua2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_rbExclusaoMutua2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -250,9 +305,14 @@ private void ajustarTamanhoCelulas() {
     private javax.swing.JScrollPane ScrollPaneMalha;
     private javax.swing.JButton buttonConfirm;
     private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.ButtonGroup exclusaoMutuaGroup;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JRadioButton radioMalha1;
     private javax.swing.JRadioButton radioMalha2;
     private javax.swing.JRadioButton radioMalha3;
+    private javax.swing.JRadioButton rbExclusaoMutua1;
+    private javax.swing.JRadioButton rbExclusaoMutua2;
     private javax.swing.JTable tableMalha;
     // End of variables declaration//GEN-END:variables
 }

@@ -6,6 +6,8 @@ package controller;
 
 import java.io.IOException;
 import javax.swing.JOptionPane;
+
+import model.ExclusaoMutuaTipo;
 import model.MalhaTableModel;
 import view.ExecucaoMalha;
 import view.SelecaoMalha;
@@ -19,11 +21,13 @@ public class SelecaoMalhaController {
     private SelecaoMalha telaSelecao;
     private String malhaSelecionada;
     private MalhaTableModel malhaTableModel;
+    private ExclusaoMutuaTipo exclusaoMutuaTipo;
 
     public SelecaoMalhaController(SelecaoMalha tela) {
         this.telaSelecao = tela;
         this.telaSelecao.getRadioMalha1().setSelected(true);
         acaoSelecionarMalha(1);
+        this.telaSelecao.setDefaultRadioButtonSelected();
         inicializarBotoes();
     }
 
@@ -36,7 +40,7 @@ public class SelecaoMalhaController {
     }
 
     public void acaoBotaoConfirmar() {
-        ExecucaoMalhaController execucaoMalhaController = new ExecucaoMalhaController(new ExecucaoMalha(), malhaSelecionada);
+        ExecucaoMalhaController execucaoMalhaController = new ExecucaoMalhaController(new ExecucaoMalha(), malhaSelecionada, exclusaoMutuaTipo);
         execucaoMalhaController.exibirTela();
         fecharTela();
     }
@@ -74,6 +78,12 @@ private void inicializarBotoes() {
         telaSelecao.adicionarAcaoRadioMalha1(acao -> acaoSelecionarMalha(1));
         telaSelecao.adicionarAcaoRadioMalha2(acao -> acaoSelecionarMalha(2));
         telaSelecao.adicionarAcaoRadioMalha3(acao -> acaoSelecionarMalha(3));
+        telaSelecao.adicionarAcaoRadioExclusaoMutua1(acao -> acaoSelecionarExclusaoMutua(ExclusaoMutuaTipo.MONITOR));
+        telaSelecao.adicionarAcaoRadioExclusaoMutua2(acao -> acaoSelecionarExclusaoMutua(ExclusaoMutuaTipo.MONITOR));
+    }
+
+    private void acaoSelecionarExclusaoMutua(ExclusaoMutuaTipo tipo) {
+        setExclusaoMutuaTipo(tipo);
     }
 
     public String getMalhaSelecionada() {
@@ -92,5 +102,11 @@ private void inicializarBotoes() {
     telaSelecao.getTableMalha().setTableHeader(null);
 }
 
-    
+    public ExclusaoMutuaTipo getExclusaoMutuaTipo() {
+        return exclusaoMutuaTipo;
+    }
+
+    public void setExclusaoMutuaTipo(ExclusaoMutuaTipo exclusaoMutuaTipo) {
+        this.exclusaoMutuaTipo = exclusaoMutuaTipo;
+    }
 }

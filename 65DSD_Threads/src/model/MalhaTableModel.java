@@ -45,7 +45,14 @@ public class MalhaTableModel extends AbstractTableModel {
             for (int i = 0; i < rows; i++) {
                 String[] line = reader.readLine().split("\\s+");
                 for (int j = 0; j < cols; j++) {
-                    malhaEstrada[i][j] = new EstradaCelula(Integer.parseInt(line[j]), this, i, j);
+                    int cellValue = Integer.parseInt(line[j]);
+                    boolean isCruzamento = false;
+                    if(Integer.parseInt(line[j]) >= 5 && Integer.parseInt(line[j]) <= 12 ) {
+                        isCruzamento = true;
+                    }
+
+
+                    malhaEstrada[i][j] = new EstradaCelula(cellValue, this, i, j, isCruzamento);
                 }
             }
         }

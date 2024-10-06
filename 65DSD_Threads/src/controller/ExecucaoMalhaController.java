@@ -14,6 +14,7 @@ import javax.swing.JOptionPane;
 
 import model.Carro;
 import model.EstradaCelula;
+import model.ExclusaoMutuaTipo;
 import model.MalhaTableModel;
 import view.ExecucaoMalha;
 
@@ -33,13 +34,15 @@ public class ExecucaoMalhaController {
     private int intervalo;
     private Random random;
     private boolean simulacaoAtiva;
+    private ExclusaoMutuaTipo exclusaoMutuaTipo;
 
-    public ExecucaoMalhaController(ExecucaoMalha telaExecucao, String malhaSelecionada) {
+    public ExecucaoMalhaController(ExecucaoMalha telaExecucao, String malhaSelecionada, ExclusaoMutuaTipo exclusaoMutuaTipo) {
         this.telaExecucao = telaExecucao;
         this.malhaSelecionada = malhaSelecionada;
         inicializarTabela();
         this.veiculosMalha = new ArrayList<>();
         this.random = new Random();
+        this.exclusaoMutuaTipo = exclusaoMutuaTipo;
     }
 
 
@@ -48,6 +51,7 @@ public class ExecucaoMalhaController {
             setMalhaSelecionada(malhaSelecionada);
             malhaTableModel = new MalhaTableModel(malhaSelecionada);
             telaExecucao.setTableModel(malhaTableModel);
+
             inicializarBotoes();
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Erro ao carregar a malha: " + e.getMessage());
@@ -78,33 +82,32 @@ public class ExecucaoMalhaController {
         telaExecucao.getTableMalha().setTableHeader(null);
     }
 
+    public void removerCarroMalha(Carro carro){
+        this.veiculosMalha.remove(carro);
+    }
+
     public void acaoIniciarSimulacao() {
         this.qtdVeiculos = telaExecucao.getQtdVeiculos();
         this.intervalo = telaExecucao.getIntervalo();
 
         List<EstradaCelula> entradas = malhaTableModel.getPontosDeEntrada();
 
-        try {
-            if (!(veiculosMalha.size() == qtdVeiculos)) {
-                simulacaoAtiva = true;
-                for (int i = 0; i < qtdVeiculos && simulacaoAtiva; i++) {
-                    EstradaCelula estradaEntrada = entradas.get(random.nextInt(entradas.size()));
+        if (!(veiculosMalha.size() == qtdVeiculos)) {
+            simulacaoAtiva = true;
+            for (int i = 0; i < qtdVeiculos && simulacaoAtiva; i++) {
+                EstradaCelula estradaEntrada = entradas.get(random.nextInt(entradas.size()));
 
-                    int velocidade = (5 + random.nextInt(6)) * 1000;
-                    Carro carro = new Carro(velocidade, estradaEntrada);
-                    estradaEntrada.setCarro(carro);
-                    veiculosMalha.add(carro);
+                Carro carro = new Carro(estradaEntrada, exclusaoMutuaTipo, this);
+                estradaEntrada.setCarro(carro);
+                veiculosMalha.add(carro);
 
-                    // Atualiza a célula para exibir o carro
-                    estradaEntrada.getMalha().fireTableCellUpdated(estradaEntrada.getLin(), estradaEntrada.getCol());
+                // Atualiza a célula para exibir o carro
+                estradaEntrada.getMalha().fireTableCellUpdated(estradaEntrada.getLin(), estradaEntrada.getCol());
 
 
-                    carro.start();
-                    sleep(intervalo);
-                }
+                carro.start();
+                // como fazer para esperar o intervalo de inserção
             }
-        } catch (InterruptedException e) {
-            System.out.println(e.getMessage());
         }
     }
 

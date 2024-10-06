@@ -36,7 +36,7 @@ public class MalhaCellRenderer extends DefaultTableCellRenderer {
         icons[2] = resizeIcon(new ImageIcon(getClass().getClassLoader().getResource("images/right-arrow.png")), 25, 25);
         icons[3] = resizeIcon(new ImageIcon(getClass().getClassLoader().getResource("images/down-arrow.png")), 25, 25);
         icons[4] = resizeIcon(new ImageIcon(getClass().getClassLoader().getResource("images/left-arrow.png")), 25, 25);
-        icons[5] = resizeIcon(new ImageIcon(getClass().getClassLoader().getResource("images/car.png")), 25, 25);
+        icons[13] = resizeIcon(new ImageIcon(getClass().getClassLoader().getResource("images/car.png")), 25, 25);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class MalhaCellRenderer extends DefaultTableCellRenderer {
             Carro carro = celula.getCarro();
 
             if (carro != null && cellValue != 0) {
-                setIcon(icons[5]);
+                setIcon(icons[13]);
                 setHorizontalAlignment(SwingConstants.CENTER);
                 c.setBackground(colors[cellValue]);
                 if (cellValue >= 5 && cellValue <= 12) {

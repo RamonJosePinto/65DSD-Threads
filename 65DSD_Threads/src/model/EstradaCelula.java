@@ -1,24 +1,30 @@
 package model;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 public class EstradaCelula {
     private Carro carro;
     private int direcao;
     private int col;
     private int lin;
     private MalhaTableModel malha;
+    private boolean cruzamento;
 
-    public EstradaCelula(int direcao, MalhaTableModel malha, int lin, int col) {
+    public EstradaCelula(int direcao, MalhaTableModel malha, int lin, int col, boolean cruzamento) {
         this.direcao = direcao;
         this.lin = lin;
         this.col = col;
         this.malha = malha;
+        this.cruzamento = cruzamento;
     }
 
     public boolean isCruzamento() {
-        return direcao >= 5 && direcao <= 12;
+        return cruzamento;
     }
 
-    public EstradaCelula getProximaEstrada(){
+    public EstradaCelula getProximaEstrada(int direcao){
         int novaLinha = lin;
         int novaColuna = col;
         switch (direcao){
@@ -39,7 +45,7 @@ public class EstradaCelula {
     }
 
     public boolean isProximaCelulaLivre(){
-        return getProximaEstrada().getCarro() == null;
+        return getProximaEstrada(this.getDirecao()).getCarro() == null;
     }
 
     public boolean isSaida(){
@@ -95,6 +101,10 @@ public class EstradaCelula {
         this.malha = malha;
     }
 
+    public void setCruzamento(boolean cruzamento) {
+        this.cruzamento = cruzamento;
+    }
+
     @Override
     public String toString() {
         return "EstradaCelula{" +
@@ -102,5 +112,53 @@ public class EstradaCelula {
                 ", col=" + col +
                 ", lin=" + lin +
                 '}';
+    }
+
+    public List<EstradaCelula> getCruzamentos() {
+        List<EstradaCelula> caminhoCruzamento = new ArrayList<>();
+
+        // Verificar todas as direções possíveis no cruzamento
+        List<Integer> direcoesPossiveis = new ArrayList<>();
+
+        EstradaCelula proximaEstrada = this;
+
+        while (proximaEstrada != null && proximaEstrada.isCruzamento()) {
+
+        // Adiciona direções possíveis baseado no valor de direção
+        if (proximaEstrada.getDirecao() == 5 || proximaEstrada.getDirecao() == 9 || proximaEstrada.getDirecao() == 10) {  // Cima permitido
+            direcoesPossiveis.add(1);  // 1 representa direção Cima
+        }
+        if (proximaEstrada.getDirecao() == 6 || proximaEstrada.getDirecao() == 9 || proximaEstrada.getDirecao() == 11) {  // Direita permitido
+            direcoesPossiveis.add(2);  // 2 representa direção Direita
+        }
+        if (proximaEstrada.getDirecao() == 7 || proximaEstrada.getDirecao() == 11 || proximaEstrada.getDirecao() == 12) {  // Baixo permitido
+            direcoesPossiveis.add(3);  // 3 representa direção Baixo
+        }
+        if (proximaEstrada.getDirecao() == 8 || proximaEstrada.getDirecao() == 10 || proximaEstrada.getDirecao() == 12) {  // Esquerda permitido
+            direcoesPossiveis.add(4);  // 4 representa direção Esquerda
+        }
+
+        System.out.println("direões possiveis"+direcoesPossiveis);
+
+        // Escolher aleatoriamente uma direção
+        Random random = new Random();
+        int direcaoEscolhida = direcoesPossiveis.get(random.nextInt(direcoesPossiveis.size()));
+
+        System.out.println("direcoes possiveis:" +direcoesPossiveis.toString());
+        System.out.println("direacao escolhida"+direcaoEscolhida);
+
+            // Adiciona a célula à lista de caminho do cruzamento
+            caminhoCruzamento.add(proximaEstrada);
+            proximaEstrada = proximaEstrada.getProximaEstrada(direcaoEscolhida);
+            direcoesPossiveis.clear();
+        }
+
+        // Adiciona a última célula (que não é mais cruzamento) à lista
+        if (proximaEstrada != null) {
+            caminhoCruzamento.add(proximaEstrada);
+        }
+
+        // Retorna o caminho a ser percorrido no cruzamento
+        return caminhoCruzamento;
     }
 }

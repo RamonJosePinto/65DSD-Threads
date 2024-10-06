@@ -1,5 +1,6 @@
 package view;
 
+import model.MalhaCellRenderer;
 import model.MalhaTableModel;
 import javax.swing.*;
 import java.awt.*;
