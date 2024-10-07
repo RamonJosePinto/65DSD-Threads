@@ -24,7 +24,7 @@ import static java.lang.Thread.sleep;
  *
  * @author Pichau
  */
-public class ExecucaoMalhaController {
+public class ExecucaoMalhaController extends Thread {
 
     private ExecucaoMalha telaExecucao;
     private String malhaSelecionada;
@@ -97,18 +97,37 @@ public class ExecucaoMalhaController {
             for (int i = 0; i < qtdVeiculos && simulacaoAtiva; i++) {
                 EstradaCelula estradaEntrada = entradas.get(random.nextInt(entradas.size()));
 
-                Carro carro = new Carro(estradaEntrada, exclusaoMutuaTipo, this);
-                estradaEntrada.setCarro(carro);
-                veiculosMalha.add(carro);
+                try {
+                    Carro carro = new Carro(estradaEntrada, exclusaoMutuaTipo, this);
+                    estradaEntrada.setCarro(carro);
+                    veiculosMalha.add(carro);
 
-                // Atualiza a célula para exibir o carro
-                estradaEntrada.getMalha().fireTableCellUpdated(estradaEntrada.getLin(), estradaEntrada.getCol());
+                    // Atualiza a célula para exibir o carro
+                    estradaEntrada.getMalha().fireTableCellUpdated(estradaEntrada.getLin(), estradaEntrada.getCol());
 
 
-                carro.start();
+                    carro.start();
+                    carro.atualizarInterfaceGrafica();
+                    sleepProximoCarro();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
                 // como fazer para esperar o intervalo de inserção
             }
         }
+    }
+
+    @Override
+    public void run() {
+        this.acaoIniciarSimulacao();
+    }
+
+    private void sleepProximoCarro() throws InterruptedException {
+        int tempoSleep = 10;
+        if (this.intervalo > 0) {
+            tempoSleep = intervalo * 1000;
+        }
+        sleep(tempoSleep);
     }
 
     public void acaoEncerrarInsercao(){
@@ -132,7 +151,7 @@ public class ExecucaoMalhaController {
     }
 
     private void inicializarBotoes() {
-        telaExecucao.adicionarAcaoBotaoIniciarSimulacao(acao -> acaoIniciarSimulacao());
+        telaExecucao.adicionarAcaoBotaoIniciarSimulacao(acao -> this.start());
         telaExecucao.adicionarAcaoBotaoEncerrarInsercao(acao -> acaoEncerrarInsercao());
         telaExecucao.adicionarAcaoBotaoEncerrarSimulacao(acao -> acaoEncerrarSimulacao());
         telaExecucao.adicionarAcaoSpinnerQtdVeiculos(acao -> acaoAlterarQtdVeiculos());

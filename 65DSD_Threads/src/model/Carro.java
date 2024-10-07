@@ -117,7 +117,7 @@ public class Carro extends Thread {
     }
 
 
-    private void atualizarInterfaceGrafica() {
+    public void atualizarInterfaceGrafica() {
         // Atualizar a célula onde o carro está (pintar o carro)
         estrada.getMalha().fireTableCellUpdated(estrada.getLin(), estrada.getCol());
     }
