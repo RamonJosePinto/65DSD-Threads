@@ -71,15 +71,19 @@ public class Carro extends Thread {
             List<EstradaCelula> cruzamentoEstradas = primeiraEstradaCruzamento.getCruzamentos();
 
             // Adicionar a primeira célula do cruzamento à lista
-            cruzamentoEstradas.add(0, primeiraEstradaCruzamento);
+            // Comentado pois gerava delay duplo ao entrar no cruzamento
+//            cruzamentoEstradas.add(0, primeiraEstradaCruzamento);
 
 
             for (EstradaCelula e: cruzamentoEstradas) {
                 moverParaCelula(e);
-                Thread.sleep(this.velocidade);
+                // TODO: ver melhor forma de resolver isso, talvez retirar a ultima estrada
+                // da lista de cruzamentoEstradas, que é a primeira estrada pós cruzamento
+                if(e.isCruzamento()) { // Resolver delay duplo ao sair do cruzamento
+                    Thread.sleep(this.velocidade);
+                }
             }
         }
-
     }
 
 

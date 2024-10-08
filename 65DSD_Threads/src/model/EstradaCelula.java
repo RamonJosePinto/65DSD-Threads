@@ -111,6 +111,7 @@ public class EstradaCelula {
                 "direcao=" + direcao +
                 ", col=" + col +
                 ", lin=" + lin +
+                ", cruzamento=" + cruzamento +
                 '}';
     }
 
