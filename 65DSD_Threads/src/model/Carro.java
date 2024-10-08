@@ -70,24 +70,14 @@ public class Carro extends Thread {
             // Obter o caminho completo do cruzamento
             List<EstradaCelula> cruzamentoEstradas = primeiraEstradaCruzamento.getCruzamentos();
 
-            System.out.println("cruzamento estradas");
-
-            for (EstradaCelula e : cruzamentoEstradas){
-                System.out.println(e.toString());
-            }
-            System.out.println("fim");
-
             // Adicionar a primeira célula do cruzamento à lista
             cruzamentoEstradas.add(0, primeiraEstradaCruzamento);
 
 
-//            System.out.println("Estradas do cruzamento:");
             for (EstradaCelula e: cruzamentoEstradas) {
-//                System.out.println(e.toString());
                 moverParaCelula(e);
                 Thread.sleep(this.velocidade);
             }
-//            System.out.println("Fim do cruzamento");
         }
 
     }
@@ -96,16 +86,12 @@ public class Carro extends Thread {
     private void moverParaProximaCelula() {
         EstradaCelula proximaEstrada = estrada.getProximaEstrada(estrada.getDirecao());
 
-        // Atualiza a célula de origem (remove o carro da célula antiga)
-       atualizarInterfaceGrafica();
-
-        // Mover o carro para a próxima célula
+        atualizarInterfaceGrafica();
         estrada.setCarro(null);
         proximaEstrada.setCarro(this);
         estrada = proximaEstrada;
-        System.out.println("Carro"+this.toString()+" agora está na estrada:" +this.estrada.toString());
-        // Atualiza a célula de destino (mostra o carro na nova célula)
-       atualizarInterfaceGrafica();
+//        System.out.println("Carro"+this.toString()+" agora está na estrada:" +this.estrada.toString());
+        atualizarInterfaceGrafica();
     }
 
     private void moverParaCelula(EstradaCelula est){
@@ -114,7 +100,7 @@ public class Carro extends Thread {
         estrada.setCarro(null);
         est.setCarro(this);
         estrada = est;
-        System.out.println("Carro"+this.toString()+" agora está na estrada:" +this.estrada.toString());
+//        System.out.println("Carro"+this.toString()+" agora está na estrada:" +this.estrada.toString());
         atualizarInterfaceGrafica();
     }
 

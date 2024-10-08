@@ -116,49 +116,63 @@ public class EstradaCelula {
 
     public List<EstradaCelula> getCruzamentos() {
         List<EstradaCelula> caminhoCruzamento = new ArrayList<>();
-
-        // Verificar todas as direções possíveis no cruzamento
-        List<Integer> direcoesPossiveis = new ArrayList<>();
-
         EstradaCelula proximaEstrada = this;
+        caminhoCruzamento.add(this);
 
         while (proximaEstrada != null && proximaEstrada.isCruzamento()) {
+            List<Integer> direcoesPossiveis = new ArrayList<>();
 
-        // Adiciona direções possíveis baseado no valor de direção
-        if (proximaEstrada.getDirecao() == 5 || proximaEstrada.getDirecao() == 9 || proximaEstrada.getDirecao() == 10) {  // Cima permitido
-            direcoesPossiveis.add(1);  // 1 representa direção Cima
-        }
-        if (proximaEstrada.getDirecao() == 6 || proximaEstrada.getDirecao() == 9 || proximaEstrada.getDirecao() == 11) {  // Direita permitido
-            direcoesPossiveis.add(2);  // 2 representa direção Direita
-        }
-        if (proximaEstrada.getDirecao() == 7 || proximaEstrada.getDirecao() == 11 || proximaEstrada.getDirecao() == 12) {  // Baixo permitido
-            direcoesPossiveis.add(3);  // 3 representa direção Baixo
-        }
-        if (proximaEstrada.getDirecao() == 8 || proximaEstrada.getDirecao() == 10 || proximaEstrada.getDirecao() == 12) {  // Esquerda permitido
-            direcoesPossiveis.add(4);  // 4 representa direção Esquerda
-        }
+            // Adiciona direções possíveis baseado no valor de direção
+            if (proximaEstrada.getDirecao() == 5 || proximaEstrada.getDirecao() == 9 || proximaEstrada.getDirecao() == 10) {
+                direcoesPossiveis.add(1); // Cima
+            }
+            if (proximaEstrada.getDirecao() == 6 || proximaEstrada.getDirecao() == 9 || proximaEstrada.getDirecao() == 11) {
+                direcoesPossiveis.add(2); // Direita
+            }
+            if (proximaEstrada.getDirecao() == 7 || proximaEstrada.getDirecao() == 11 || proximaEstrada.getDirecao() == 12) {
+                direcoesPossiveis.add(3); // Baixo
+            }
+            if (proximaEstrada.getDirecao() == 8 || proximaEstrada.getDirecao() == 10 || proximaEstrada.getDirecao() == 12) {
+                direcoesPossiveis.add(4); // Esquerda
+            }
 
-        System.out.println("direões possiveis"+direcoesPossiveis);
+            System.out.println("Direções possíveis: " + direcoesPossiveis);
+//
+            Random random = new Random();
+            EstradaCelula novaEstrada = null;
+            int direcaoEscolhida = -1;
 
-        // Escolher aleatoriamente uma direção
-        Random random = new Random();
-        int direcaoEscolhida = direcoesPossiveis.get(random.nextInt(direcoesPossiveis.size()));
+            // Tenta encontrar uma direção válida que não leve a um loop
+            while (!direcoesPossiveis.isEmpty()) {
+                direcaoEscolhida = direcoesPossiveis.get(random.nextInt(direcoesPossiveis.size()));
+                novaEstrada = proximaEstrada.getProximaEstrada(direcaoEscolhida);
 
-        System.out.println("direcoes possiveis:" +direcoesPossiveis.toString());
-        System.out.println("direacao escolhida"+direcaoEscolhida);
+                // Se a nova estrada já foi percorrida, remove essa direção das possibilidades
+                if (caminhoCruzamento.contains(novaEstrada)) {
+                    System.out.println("Ele tentou ir para uma casa já visitada");
+                    direcoesPossiveis.remove(Integer.valueOf(direcaoEscolhida));
+                    novaEstrada = null; // Resetar para continuar tentando
+                } else {
+                    break; // Encontramos uma direção que ainda não foi percorrida
+                }
+            }
 
-            // Adiciona a célula à lista de caminho do cruzamento
-            caminhoCruzamento.add(proximaEstrada);
-            proximaEstrada = proximaEstrada.getProximaEstrada(direcaoEscolhida);
-            direcoesPossiveis.clear();
+            // Se não encontrou uma direção válida, sai do loop
+            if (novaEstrada == null) {
+                break;
+            }
+
+            // Adiciona a nova estrada ao caminho e continua
+            caminhoCruzamento.add(novaEstrada);
+            proximaEstrada = novaEstrada;
         }
 
         // Adiciona a última célula (que não é mais cruzamento) à lista
-        if (proximaEstrada != null) {
+        if (proximaEstrada != null && !caminhoCruzamento.contains(proximaEstrada)) {
             caminhoCruzamento.add(proximaEstrada);
         }
 
-        // Retorna o caminho a ser percorrido no cruzamento
         return caminhoCruzamento;
     }
+
 }
