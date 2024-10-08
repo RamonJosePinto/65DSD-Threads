@@ -24,7 +24,7 @@ import static java.lang.Thread.sleep;
  *
  * @author Pichau
  */
-public class ExecucaoMalhaController extends Thread {
+public class ExecucaoMalhaController {
 
     private ExecucaoMalha telaExecucao;
     private String malhaSelecionada;
@@ -35,6 +35,7 @@ public class ExecucaoMalhaController extends Thread {
     private Random random;
     private boolean simulacaoAtiva;
     private ExclusaoMutuaTipo exclusaoMutuaTipo;
+    private GeradorCarro geradorCarro;
 
     public ExecucaoMalhaController(ExecucaoMalha telaExecucao, String malhaSelecionada, ExclusaoMutuaTipo exclusaoMutuaTipo) {
         this.telaExecucao = telaExecucao;
@@ -43,6 +44,7 @@ public class ExecucaoMalhaController extends Thread {
         this.veiculosMalha = new ArrayList<>();
         this.random = new Random();
         this.exclusaoMutuaTipo = exclusaoMutuaTipo;
+        this.geradorCarro = null;
     }
 
 
@@ -91,55 +93,57 @@ public class ExecucaoMalhaController extends Thread {
         this.intervalo = telaExecucao.getIntervalo();
 
         List<EstradaCelula> entradas = malhaTableModel.getPontosDeEntrada();
+        
+        this.geradorCarro = new GeradorCarro(this, entradas, veiculosMalha, qtdVeiculos, intervalo);
+        this.geradorCarro.start();
 
-        if (!(veiculosMalha.size() == qtdVeiculos)) {
-            simulacaoAtiva = true;
-            for (int i = 0; i < qtdVeiculos && simulacaoAtiva; i++) {
-                EstradaCelula estradaEntrada = entradas.get(random.nextInt(entradas.size()));
-
-                try {
-                    Carro carro = new Carro(estradaEntrada, exclusaoMutuaTipo, this);
-                    estradaEntrada.setCarro(carro);
-                    veiculosMalha.add(carro);
-
-                    // Atualiza a célula para exibir o carro
-                    estradaEntrada.getMalha().fireTableCellUpdated(estradaEntrada.getLin(), estradaEntrada.getCol());
-
-
-                    carro.start();
-                    carro.atualizarInterfaceGrafica();
-                    sleepProximoCarro();
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-                // como fazer para esperar o intervalo de inserção
-            }
-        }
+//        if (!(veiculosMalha.size() == qtdVeiculos)) {
+//            simulacaoAtiva = true;
+//            for (int i = 0; i < qtdVeiculos && simulacaoAtiva; i++) {
+//                EstradaCelula estradaEntrada = entradas.get(random.nextInt(entradas.size()));
+//
+//                try {
+//                    Carro carro = new Carro(estradaEntrada, exclusaoMutuaTipo, this);
+//                    estradaEntrada.setCarro(carro);
+//                    veiculosMalha.add(carro);
+//
+//                    // Atualiza a célula para exibir o carro
+//                    estradaEntrada.getMalha().fireTableCellUpdated(estradaEntrada.getLin(), estradaEntrada.getCol());
+//
+//
+//                    carro.start();
+//                    carro.atualizarInterfaceGrafica();
+//                    sleepProximoCarro();
+//                } catch (Exception e) {
+//                    throw new RuntimeException(e);
+//                }
+//                // como fazer para esperar o intervalo de inserção
+//            }
+//        }
     }
+//    @Override
+//    public void run() {
+//        this.acaoIniciarSimulacao();
+//    }
 
-    @Override
-    public void run() {
-        this.acaoIniciarSimulacao();
-    }
-
-    private void sleepProximoCarro() throws InterruptedException {
-        int tempoSleep = 10;
-        if (this.intervalo > 0) {
-            tempoSleep = intervalo * 1000;
-        }
-        sleep(tempoSleep);
-    }
 
     public void acaoEncerrarInsercao(){
-
+        this.geradorCarro.interrupt();
     }
 
     public void acaoEncerrarSimulacao(){
-        simulacaoAtiva = false;
-
+//        simulacaoAtiva = false;
+//
+//        for (Carro carro : veiculosMalha) {
+//            carro.interrupt();
+//        }
+        this.geradorCarro.interrupt();
+        
         for (Carro carro : veiculosMalha) {
             carro.interrupt();
         }
+        
+        // To fazendo ainda favor não mexer.
     }
 
     public void acaoAlterarQtdVeiculos(){
@@ -151,7 +155,7 @@ public class ExecucaoMalhaController extends Thread {
     }
 
     private void inicializarBotoes() {
-        telaExecucao.adicionarAcaoBotaoIniciarSimulacao(acao -> this.start());
+        telaExecucao.adicionarAcaoBotaoIniciarSimulacao(acao -> acaoIniciarSimulacao());
         telaExecucao.adicionarAcaoBotaoEncerrarInsercao(acao -> acaoEncerrarInsercao());
         telaExecucao.adicionarAcaoBotaoEncerrarSimulacao(acao -> acaoEncerrarSimulacao());
         telaExecucao.adicionarAcaoSpinnerQtdVeiculos(acao -> acaoAlterarQtdVeiculos());

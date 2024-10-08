@@ -29,25 +29,27 @@ public class Carro extends Thread {
 
     @Override
     public void run() {
-        try {
-            Thread.sleep(velocidade);
-            while (!estrada.isSaida()) {
-                // Verificar a célula à frente (baseado na direção do carro)
-                if(estrada.getProximaEstrada(estrada.getDirecao()).isCruzamento()){
-                    percorrerCruzamento();
-                } else if (estrada.isProximaCelulaLivre()) {
-                    // Mover carro para a próxima célula
-                    moverParaProximaCelula();
-                    // Atualizar a interface gráfica aqui (pintar célula)
-                    atualizarInterfaceGrafica();
-                }
+        while(!this.isInterrupted()) {
+            try {
                 Thread.sleep(velocidade);
+                while (!estrada.isSaida()) {
+                    // Verificar a célula à frente (baseado na direção do carro)
+                    if(estrada.getProximaEstrada(estrada.getDirecao()).isCruzamento()){
+                        percorrerCruzamento();
+                    } else if (estrada.isProximaCelulaLivre()) {
+                        // Mover carro para a próxima célula
+                        moverParaProximaCelula();
+                        // Atualizar a interface gráfica aqui (pintar célula)
+                        atualizarInterfaceGrafica();
+                    }
+                    Thread.sleep(velocidade);
+                }
+                if (estrada.isSaida()){
+                    removerCarroMalha();
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-            if (estrada.isSaida()){
-                removerCarroMalha();
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
     }
 
