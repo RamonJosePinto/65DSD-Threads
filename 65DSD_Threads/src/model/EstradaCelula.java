@@ -3,6 +3,7 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.Semaphore;
 
 public class EstradaCelula {
     private Carro carro;
@@ -11,6 +12,7 @@ public class EstradaCelula {
     private int lin;
     private MalhaTableModel malha;
     private boolean cruzamento;
+    private Semaphore mutex;
 
     public EstradaCelula(int direcao, MalhaTableModel malha, int lin, int col, boolean cruzamento) {
         this.direcao = direcao;
@@ -18,6 +20,15 @@ public class EstradaCelula {
         this.col = col;
         this.malha = malha;
         this.cruzamento = cruzamento;
+        this.mutex = new Semaphore(1);
+    }
+
+    public boolean tentarEntrarEstrada(){
+        return mutex.tryAcquire();
+    }
+
+    public void liberarEstrada(){
+        mutex.release();
     }
 
     public boolean isCruzamento() {
@@ -108,10 +119,11 @@ public class EstradaCelula {
     @Override
     public String toString() {
         return "EstradaCelula{" +
-                "direcao=" + direcao +
-                ", col=" + col +
-                ", lin=" + lin +
+                "mutex=" + mutex +
                 ", cruzamento=" + cruzamento +
+                ", lin=" + lin +
+                ", col=" + col +
+                ", direcao=" + direcao +
                 '}';
     }
 

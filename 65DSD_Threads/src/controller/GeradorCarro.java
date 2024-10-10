@@ -44,6 +44,7 @@ public class GeradorCarro extends Thread {
 
                     try {
                         Carro carro = new Carro(estradaEntrada, exclusaoMutuaTipo, controller);
+//                        estradaEntrada.tentarEntrarEstrada();
                         estradaEntrada.setCarro(carro);
                         veiculosMalha.add(carro);
 
