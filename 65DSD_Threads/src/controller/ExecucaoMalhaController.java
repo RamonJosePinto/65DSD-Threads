@@ -19,6 +19,7 @@ import model.MalhaTableModel;
 import view.ExecucaoMalha;
 
 import static java.lang.Thread.sleep;
+import view.SelecaoMalha;
 
 /**
  *
@@ -132,18 +133,15 @@ public class ExecucaoMalhaController {
     }
 
     public void acaoEncerrarSimulacao(){
-//        simulacaoAtiva = false;
-//
-//        for (Carro carro : veiculosMalha) {
-//            carro.interrupt();
-//        }
-        this.geradorCarro.interrupt();
+        if (this.geradorCarro != null) this.geradorCarro.interrupt();
         
         for (Carro carro : veiculosMalha) {
             carro.interrupt();
         }
         
-        // To fazendo ainda favor não mexer.
+        SelecaoMalhaController selecaoMalhaController = new SelecaoMalhaController(new SelecaoMalha());
+        selecaoMalhaController.exibirTela();
+        fecharTela();
     }
 
     public void acaoAlterarQtdVeiculos(){

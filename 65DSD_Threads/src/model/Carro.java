@@ -30,42 +30,40 @@ public class Carro extends Thread {
 
     @Override
     public void run() {
-        while(!this.isInterrupted()) {
+        while (!estrada.isSaida() && !this.isInterrupted()) {
+                
+            if (estrada.getProximaEstrada(estrada.getDirecao()).isCruzamento()){
+                percorrerCruzamento();
+            } else if (estrada.isProximaCelulaLivre()) {
+                moverParaProximaCelula();
+            }
+
+            atualizarInterfaceGrafica();
+
             try {
                 Thread.sleep(velocidade);
-                while (!estrada.isSaida()) {
-                    // Verificar a célula à frente (baseado na direção do carro)
-                    if(estrada.getProximaEstrada(estrada.getDirecao()).isCruzamento()){
-                        percorrerCruzamento();
-                    } else if (estrada.isProximaCelulaLivre()) {
-                        // Mover carro para a próxima célula
-                        moverParaProximaCelula();
-                        // Atualizar a interface gráfica aqui (pintar célula)
-//                        atualizarInterfaceGrafica();
-                    }
-                    atualizarInterfaceGrafica();
-                    Thread.sleep(velocidade);
-                }
-                if (estrada.isSaida()){
-                    removerCarroMalha();
-                }
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
         }
+            
+        if (estrada.isSaida()){
+            if (!this.isInterrupted()) this.interrupt();
+            removerCarroMalha();
+        }
     }
-
-    private void removerCarroMalha() {
+    
+//  private void removerCarroMalha() {
+    public void removerCarroMalha() {
         estrada.setCarro(null);
-//        atualizarInterfaceGrafica();
 
-        this.interrupt();
+        //this.interrupt();
         controller.removerCarroMalha(this);
         estrada.liberarEstrada();
         atualizarInterfaceGrafica();
     }
 
-    private void percorrerCruzamento() throws InterruptedException {
+    private void percorrerCruzamento() {
         // Obter a próxima estrada, que é a primeira célula do cruzamento
         EstradaCelula primeiraEstradaCruzamento = estrada.getProximaEstrada(estrada.getDirecao());
 
@@ -84,7 +82,12 @@ public class Carro extends Thread {
                     // da lista de cruzamentoEstradas, que é a primeira estrada pós cruzamento
                     if (e.isCruzamento()) { // Resolver delay duplo ao sair do cruzamento
                         atualizarInterfaceGrafica();
-                        Thread.sleep(this.velocidade);
+                        
+                        try {
+                            Thread.sleep(this.velocidade);
+                        } catch (InterruptedException ex) {
+                            throw new RuntimeException(ex);
+                        }
                     }
                 }
             }
