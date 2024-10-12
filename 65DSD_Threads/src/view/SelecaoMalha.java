@@ -15,7 +15,7 @@ import model.MalhaTableModel;
 
 /**
  *
- * @author Pichau
+ * @author RamonJoseP
  */
 public class SelecaoMalha extends javax.swing.JFrame {
 

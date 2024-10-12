@@ -14,7 +14,7 @@ import view.SelecaoMalha;
 
 /**
  *
- * @author Pichau
+ * @author RamonJoseP
  */
 public class SelecaoMalhaController {
 

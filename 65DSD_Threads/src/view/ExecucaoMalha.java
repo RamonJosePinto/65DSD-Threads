@@ -15,7 +15,7 @@ import java.awt.event.ActionListener;
 
 /**
  *
- * @author Pichau
+ * @author RamonJoseP
  */
 public class ExecucaoMalha extends javax.swing.JFrame {
 

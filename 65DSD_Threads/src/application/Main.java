@@ -11,7 +11,7 @@ import view.SelecaoMalha;
 
 /**
  *
- * @author Pichau
+ * @author RamonJoseP
  */
 public class Main {
     public static void main(String[] args) {

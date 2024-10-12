@@ -12,7 +12,7 @@ import java.util.Random;
 
 /**
  *
- * @author Pichau
+ * @author RamonJoseP
  */
 public class Carro extends Thread {
     private Random r = new Random();
@@ -35,14 +35,14 @@ public class Carro extends Thread {
     public void run() {
         while (!estrada.isSaida() && !this.isInterrupted()) {
 
-            if (estrada.getProximaEstrada(estrada.getDirecao()).isCruzamento()) {
+            if (estrada.getProximaEstrada().isCruzamento()) {
                 try {
                     percorrerCruzamento();
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
             } else if (estrada.isProximaCelulaLivre()) {
-                moverParaProximaCelula();
+                moverParaCelula(estrada.getProximaEstrada(), true);
             }
 
             atualizarInterfaceGrafica();
@@ -60,7 +60,6 @@ public class Carro extends Thread {
         }
     }
 
-//  private void removerCarroMalha() {
     public void removerCarroMalha() {
         estrada.setCarro(null);
 
@@ -76,7 +75,7 @@ public class Carro extends Thread {
                 moverParaCelula(e, false);
                 // TODO: ver melhor forma de resolver isso, talvez retirar a ultima estrada
                 // da lista de cruzamentoEstradas, que é a primeira estrada pós cruzamento
-                if (e.isCruzamento()) { // Resolver delay duplo ao sair do cruzamento
+                if (e.isCruzamento()) {
                     atualizarInterfaceGrafica();
                     Thread.sleep(this.velocidade);
                 }
@@ -85,15 +84,11 @@ public class Carro extends Thread {
     }
 
     private void percorrerCruzamento() throws InterruptedException {
-        // Obter a próxima estrada, que é a primeira célula do cruzamento
-        EstradaCelula primeiraEstradaCruzamento = estrada.getProximaEstrada(estrada.getDirecao());
+        EstradaCelula primeiraEstradaCruzamento = estrada.getProximaEstrada();
 
-        // Verificar se a próxima estrada é realmente um cruzamento antes de continuar
         if (primeiraEstradaCruzamento.isCruzamento()) {
-            // Obter o caminho completo do cruzamento
             List<EstradaCelula> cruzamentoEstradas = primeiraEstradaCruzamento.getCruzamentos();
             if(exclusaoMutuaTipo == ExclusaoMutuaTipo.MONITOR){
-                System.out.println("Realmente entrou no monitor");
                 monitorPercorrerCruzamento(cruzamentoEstradas);
             } else {
                 List<EstradaCelula> cruzamentosReservados = getCruzamentosReservados(cruzamentoEstradas);
@@ -105,7 +100,7 @@ public class Carro extends Thread {
                         moverParaCelula(e, false);
                         // TODO: ver melhor forma de resolver isso, talvez retirar a ultima estrada
                         // da lista de cruzamentoEstradas, que é a primeira estrada pós cruzamento
-                        if (e.isCruzamento()) { // Resolver delay duplo ao sair do cruzamento
+                        if (e.isCruzamento()) {
                             atualizarInterfaceGrafica();
                             Thread.sleep(this.velocidade);
                         }
@@ -134,14 +129,6 @@ public class Carro extends Thread {
         }
     }
 
-
-    private void moverParaProximaCelula() {
-        EstradaCelula proximaEstrada = estrada.getProximaEstrada(estrada.getDirecao());
-//        if(proximaEstrada.tentarEntrarEstrada()){
-        moverParaCelula(proximaEstrada, true);
-//        }
-    }
-
     private void moverParaCelula(EstradaCelula est, boolean testar){
         if (exclusaoMutuaTipo == ExclusaoMutuaTipo.MONITOR){
             monitorMoverParaCelular(est);
@@ -160,7 +147,6 @@ public class Carro extends Thread {
             est.setCarro(this);
             estrada.liberarEstrada();
             estrada = est;
-            //        atualizarInterfaceGrafica();
         }
     }
 
@@ -174,7 +160,6 @@ public class Carro extends Thread {
 
 
     public void atualizarInterfaceGrafica() {
-        // Atualizar a célula onde o carro está (pintar o carro)
         estrada.getMalha().fireTableCellUpdated(estrada.getLin(), estrada.getCol());
         estrada.getMalha().fireTableDataChanged();
     }

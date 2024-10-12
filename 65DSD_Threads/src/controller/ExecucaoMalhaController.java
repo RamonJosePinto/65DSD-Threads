@@ -23,7 +23,7 @@ import view.SelecaoMalha;
 
 /**
  *
- * @author Pichau
+ * @author RamonJoseP
  */
 public class ExecucaoMalhaController {
 
@@ -94,38 +94,10 @@ public class ExecucaoMalhaController {
         this.intervalo = telaExecucao.getIntervalo();
 
         List<EstradaCelula> entradas = malhaTableModel.getPontosDeEntrada();
-        
+
         this.geradorCarro = new GeradorCarro(this, entradas, veiculosMalha, qtdVeiculos, intervalo, exclusaoMutuaTipo);
         this.geradorCarro.start();
-
-//        if (!(veiculosMalha.size() == qtdVeiculos)) {
-//            simulacaoAtiva = true;
-//            for (int i = 0; i < qtdVeiculos && simulacaoAtiva; i++) {
-//                EstradaCelula estradaEntrada = entradas.get(random.nextInt(entradas.size()));
-//
-//                try {
-//                    Carro carro = new Carro(estradaEntrada, exclusaoMutuaTipo, this);
-//                    estradaEntrada.setCarro(carro);
-//                    veiculosMalha.add(carro);
-//
-//                    // Atualiza a célula para exibir o carro
-//                    estradaEntrada.getMalha().fireTableCellUpdated(estradaEntrada.getLin(), estradaEntrada.getCol());
-//
-//
-//                    carro.start();
-//                    carro.atualizarInterfaceGrafica();
-//                    sleepProximoCarro();
-//                } catch (Exception e) {
-//                    throw new RuntimeException(e);
-//                }
-//                // como fazer para esperar o intervalo de inserção
-//            }
-//        }
     }
-//    @Override
-//    public void run() {
-//        this.acaoIniciarSimulacao();
-//    }
 
 
     public void acaoEncerrarInsercao(){
