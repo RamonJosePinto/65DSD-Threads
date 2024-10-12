@@ -95,7 +95,7 @@ public class ExecucaoMalhaController {
 
         List<EstradaCelula> entradas = malhaTableModel.getPontosDeEntrada();
         
-        this.geradorCarro = new GeradorCarro(this, entradas, veiculosMalha, qtdVeiculos, intervalo);
+        this.geradorCarro = new GeradorCarro(this, entradas, veiculosMalha, qtdVeiculos, intervalo, exclusaoMutuaTipo);
         this.geradorCarro.start();
 
 //        if (!(veiculosMalha.size() == qtdVeiculos)) {

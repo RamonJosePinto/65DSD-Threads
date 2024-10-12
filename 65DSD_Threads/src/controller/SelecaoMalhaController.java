@@ -27,8 +27,13 @@ public class SelecaoMalhaController {
         this.telaSelecao = tela;
         this.telaSelecao.getRadioMalha1().setSelected(true);
         acaoSelecionarMalha(1);
-        this.telaSelecao.setDefaultRadioButtonSelected();
+        this.setDefaultRadioButtonSelected();
         inicializarBotoes();
+    }
+
+    public void setDefaultRadioButtonSelected(){
+        this.telaSelecao.setDefaultRadioButtonSelected();
+        this.acaoSelecionarExclusaoMutua(ExclusaoMutuaTipo.SEMAFORO);
     }
 
     public void exibirTela() {
