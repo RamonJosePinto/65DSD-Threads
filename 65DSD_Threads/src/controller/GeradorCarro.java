@@ -43,15 +43,15 @@ public class GeradorCarro extends Thread {
                 for (int i = 0; i < qtdVeiculos; i++) {
                     EstradaCelula estradaEntrada = celulasEntrada.get(new Random().nextInt(celulasEntrada.size()));
 
-                        Carro carro = new Carro(estradaEntrada, exclusaoMutuaTipo, controller);
+                    Carro carro = new Carro(estradaEntrada, exclusaoMutuaTipo, controller);
                     estradaEntrada.tentarEntrarEstrada();
-                        estradaEntrada.setCarro(carro);
-                        veiculosMalha.add(carro);
+                    estradaEntrada.setCarro(carro);
+                    veiculosMalha.add(carro);
 
-                        estradaEntrada.getMalha().fireTableCellUpdated(estradaEntrada.getLin(), estradaEntrada.getCol());
+                    estradaEntrada.getMalha().fireTableCellUpdated(estradaEntrada.getLin(), estradaEntrada.getCol());
 
-                        carro.start();
-                        carro.atualizarInterfaceGrafica();
+                    carro.start();
+                    carro.atualizarInterfaceGrafica();
 
                     try {
                         Thread.sleep(intervalo);
@@ -59,6 +59,8 @@ public class GeradorCarro extends Thread {
                         throw new RuntimeException(e);
                     }
                 }
+                
+                this.interrupt();
             }
             
         }
