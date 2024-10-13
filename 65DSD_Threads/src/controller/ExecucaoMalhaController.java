@@ -89,13 +89,21 @@ public class ExecucaoMalhaController {
         this.veiculosMalha.remove(carro);
     }
 
+    public List<Carro> getVeiculosMalha() {
+        return veiculosMalha;
+    }
+
+    public ExclusaoMutuaTipo getExclusaoMutuaTipo() {
+        return exclusaoMutuaTipo;
+    }
+
     public void acaoIniciarSimulacao() {
         this.qtdVeiculos = telaExecucao.getQtdVeiculos();
         this.intervalo = telaExecucao.getIntervalo();
 
         List<EstradaCelula> entradas = malhaTableModel.getPontosDeEntrada();
 
-        this.geradorCarro = new GeradorCarro(this, entradas, veiculosMalha, qtdVeiculos, intervalo, exclusaoMutuaTipo);
+        this.geradorCarro = new GeradorCarro(this, entradas, qtdVeiculos, intervalo);
         this.geradorCarro.start();
     }
 

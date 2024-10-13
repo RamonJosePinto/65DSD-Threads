@@ -19,34 +19,30 @@ public class GeradorCarro extends Thread {
     
     private ExecucaoMalhaController controller;
     private List<EstradaCelula> celulasEntrada;
-    private List<Carro> veiculosMalha;
-    private ExclusaoMutuaTipo exclusaoMutuaTipo;
     private int qtdVeiculos;
     private long intervalo;
     
     
-    public GeradorCarro(ExecucaoMalhaController controller, List<EstradaCelula> celulasEntrada, List<Carro> carros, int qtdVeiculos, long intervalo, ExclusaoMutuaTipo exclusaoMutuaTipo) {
+    public GeradorCarro(ExecucaoMalhaController controller, List<EstradaCelula> celulasEntrada, int qtdVeiculos, long intervalo) {
         this.controller = controller;
         this.celulasEntrada = celulasEntrada;
-        this.veiculosMalha = carros;
         this.qtdVeiculos = qtdVeiculos;
         this.intervalo = intervalo;
-        this.exclusaoMutuaTipo = exclusaoMutuaTipo;
     }
     
     @Override
     public void run() {
         while(!this.isInterrupted()) {
             
-            if (!(veiculosMalha.size() == qtdVeiculos)) {
+            if (!(controller.getVeiculosMalha().size() == qtdVeiculos)) {
 
                 for (int i = 0; i < qtdVeiculos; i++) {
                     EstradaCelula estradaEntrada = celulasEntrada.get(new Random().nextInt(celulasEntrada.size()));
 
-                    Carro carro = new Carro(estradaEntrada, exclusaoMutuaTipo, controller);
+                    Carro carro = new Carro(estradaEntrada, controller.getExclusaoMutuaTipo(), controller);
                     estradaEntrada.tentarEntrarEstrada();
                     estradaEntrada.setCarro(carro);
-                    veiculosMalha.add(carro);
+                    controller.getVeiculosMalha().add(carro);
 
                     estradaEntrada.getMalha().fireTableCellUpdated(estradaEntrada.getLin(), estradaEntrada.getCol());
 
