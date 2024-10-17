@@ -163,15 +163,17 @@ public class Carro extends Thread {
             }
         }
 
+        estrada.setCarro(null);
+        est.setCarro(this);
+
         if (exclusaoMutuaTipo == ExclusaoMutuaTipo.MONITOR && estrada.getLock().isHeldByCurrentThread()) {
             estrada.getLock().unlock();
         } else if(exclusaoMutuaTipo == ExclusaoMutuaTipo.SEMAFORO) {
             estrada.liberarEstrada();
         }
 
-        estrada.setCarro(null);
-        est.setCarro(this);
         estrada = est;
+
     }
 
 
