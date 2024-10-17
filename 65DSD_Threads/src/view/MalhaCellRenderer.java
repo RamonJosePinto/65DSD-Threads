@@ -1,4 +1,7 @@
-package model;
+package view;
+
+import model.Carro;
+import model.EstradaCelula;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;

@@ -33,8 +33,6 @@ public class ExecucaoMalhaController {
     private int qtdVeiculos;
     private List<Carro> veiculosMalha;
     private int intervalo;
-    private Random random;
-    private boolean simulacaoAtiva;
     private ExclusaoMutuaTipo exclusaoMutuaTipo;
     private GeradorCarro geradorCarro;
 
@@ -42,8 +40,8 @@ public class ExecucaoMalhaController {
         this.telaExecucao = telaExecucao;
         this.malhaSelecionada = malhaSelecionada;
         inicializarTabela();
+        inicializarBotoes();
         this.veiculosMalha = new ArrayList<>();
-        this.random = new Random();
         this.exclusaoMutuaTipo = exclusaoMutuaTipo;
         this.geradorCarro = null;
     }
@@ -51,11 +49,9 @@ public class ExecucaoMalhaController {
 
     public void inicializarTabela() {
         try {
-            setMalhaSelecionada(malhaSelecionada);
+            this.setMalhaSelecionada(malhaSelecionada);
             malhaTableModel = new MalhaTableModel(malhaSelecionada);
             telaExecucao.setTableModel(malhaTableModel);
-
-            inicializarBotoes();
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Erro ao carregar a malha: " + e.getMessage());
         }
@@ -69,32 +65,8 @@ public class ExecucaoMalhaController {
         telaExecucao.fecharTela();
     }
 
-    public String getMalhaSelecionada() {
-        return malhaSelecionada;
-    }
-
-    public void setMalhaSelecionada(String malhaSelecionada) {
-        this.malhaSelecionada = malhaSelecionada;
-    }
-
-    public void setMalhaTableModel(MalhaTableModel malhaTableModel) {
-        this.malhaTableModel = malhaTableModel;
-
-
-        telaExecucao.setTableModel(malhaTableModel);
-        telaExecucao.getTableMalha().setTableHeader(null);
-    }
-
     public void removerCarroMalha(Carro carro){
         this.veiculosMalha.remove(carro);
-    }
-
-    public List<Carro> getVeiculosMalha() {
-        return veiculosMalha;
-    }
-
-    public ExclusaoMutuaTipo getExclusaoMutuaTipo() {
-        return exclusaoMutuaTipo;
     }
 
     public void acaoIniciarSimulacao() {
@@ -106,7 +78,6 @@ public class ExecucaoMalhaController {
         this.geradorCarro = new GeradorCarro(this, entradas, qtdVeiculos, intervalo);
         this.geradorCarro.start();
     }
-
 
     public void acaoEncerrarInsercao(){
         this.geradorCarro.interrupt();
@@ -124,20 +95,35 @@ public class ExecucaoMalhaController {
         fecharTela();
     }
 
-    public void acaoAlterarQtdVeiculos(){
-
-    }
-
-    public void acaoAlterarIntervalo(){
-
-    }
 
     private void inicializarBotoes() {
         telaExecucao.adicionarAcaoBotaoIniciarSimulacao(acao -> acaoIniciarSimulacao());
         telaExecucao.adicionarAcaoBotaoEncerrarInsercao(acao -> acaoEncerrarInsercao());
         telaExecucao.adicionarAcaoBotaoEncerrarSimulacao(acao -> acaoEncerrarSimulacao());
-        telaExecucao.adicionarAcaoSpinnerQtdVeiculos(acao -> acaoAlterarQtdVeiculos());
-        telaExecucao.adicionarAcaoSpinnerIntervalo(acao -> acaoAlterarIntervalo());
+    }
+
+    public List<Carro> getVeiculosMalha() {
+        return veiculosMalha;
+    }
+
+    public ExclusaoMutuaTipo getExclusaoMutuaTipo() {
+        return exclusaoMutuaTipo;
+    }
+
+    public String getMalhaSelecionada() {
+        return malhaSelecionada;
+    }
+
+    public void setMalhaSelecionada(String malhaSelecionada) {
+        this.malhaSelecionada = malhaSelecionada;
+    }
+
+    public void setMalhaTableModel(MalhaTableModel malhaTableModel) {
+        this.malhaTableModel = malhaTableModel;
+
+
+        telaExecucao.setTableModel(malhaTableModel);
+        telaExecucao.getTableMalha().setTableHeader(null);
     }
 
 }

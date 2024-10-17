@@ -83,7 +83,7 @@ private void inicializarBotoes() {
         telaSelecao.adicionarAcaoRadioMalha1(acao -> acaoSelecionarMalha(1));
         telaSelecao.adicionarAcaoRadioMalha2(acao -> acaoSelecionarMalha(2));
         telaSelecao.adicionarAcaoRadioMalha3(acao -> acaoSelecionarMalha(3));
-        telaSelecao.adicionarAcaoRadioExclusaoMutua1(acao -> acaoSelecionarExclusaoMutua(ExclusaoMutuaTipo.MONITOR));
+        telaSelecao.adicionarAcaoRadioExclusaoMutua1(acao -> acaoSelecionarExclusaoMutua(ExclusaoMutuaTipo.SEMAFORO));
         telaSelecao.adicionarAcaoRadioExclusaoMutua2(acao -> acaoSelecionarExclusaoMutua(ExclusaoMutuaTipo.MONITOR));
     }
 

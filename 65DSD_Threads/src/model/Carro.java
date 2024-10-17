@@ -15,7 +15,7 @@ import java.util.Random;
  * @author RamonJoseP
  */
 public class Carro extends Thread {
-    private Random r = new Random();
+    private Random random = new Random();
     private int velocidade;
     private EstradaCelula estrada;
     private ExclusaoMutuaTipo exclusaoMutuaTipo;
@@ -24,34 +24,34 @@ public class Carro extends Thread {
     private static final Object moverEstradaNormal = new Object();
 
     public Carro(EstradaCelula estrada, ExclusaoMutuaTipo exclusaoMutuaTipo, ExecucaoMalhaController controller){
-        this.velocidade = r.nextInt(500) + 500;
+        this.velocidade = random.nextInt(500) + 500;
         this.estrada = estrada;
         this.exclusaoMutuaTipo = exclusaoMutuaTipo;
         this.controller = controller;
-        System.out.println("Exclusao selecionada: "+exclusaoMutuaTipo);
     }
 
     @Override
     public void run() {
-        while (!estrada.isSaida() && !this.isInterrupted()) {
+        try {
+            Thread.sleep(velocidade);
+            while (!estrada.isSaida() && !this.isInterrupted()) {
 
-            if (estrada.getProximaEstrada().isCruzamento()) {
-                try {
-                    percorrerCruzamento();
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+                if (estrada.getProximaEstrada().isCruzamento()) {
+                    try {
+                        percorrerCruzamento();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else if (estrada.isProximaCelulaLivre()) {
+                    moverParaCelula(estrada.getProximaEstrada(), true);
                 }
-            } else if (estrada.isProximaCelulaLivre()) {
-                moverParaCelula(estrada.getProximaEstrada(), true);
-            }
 
-            atualizarInterfaceGrafica();
+                atualizarInterfaceGrafica();
 
-            try {
                 Thread.sleep(velocidade);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
             }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
 
         if (estrada.isSaida()) {
@@ -62,19 +62,16 @@ public class Carro extends Thread {
 
     public void removerCarroMalha() {
         estrada.setCarro(null);
-
-        //this.interrupt();
         controller.removerCarroMalha(this);
         estrada.liberarEstrada();
         atualizarInterfaceGrafica();
     }
 
-    public void monitorPercorrerCruzamento(List<EstradaCelula> cruzamentoEstradas) throws InterruptedException {
+    public void monitorPercorrerCruzamento(List<EstradaCelula> estradasAtravessarCruzamento) throws InterruptedException {
         synchronized (cruzamentoMonitor) {
-            for (EstradaCelula e : cruzamentoEstradas) {
+            System.out.println("Ele ta no cruzamento monitor");
+            for (EstradaCelula e : estradasAtravessarCruzamento) {
                 moverParaCelula(e, false);
-                // TODO: ver melhor forma de resolver isso, talvez retirar a ultima estrada
-                // da lista de cruzamentoEstradas, que é a primeira estrada pós cruzamento
                 if (e.isCruzamento()) {
                     atualizarInterfaceGrafica();
                     Thread.sleep(this.velocidade);
@@ -87,19 +84,15 @@ public class Carro extends Thread {
         EstradaCelula primeiraEstradaCruzamento = estrada.getProximaEstrada();
 
         if (primeiraEstradaCruzamento.isCruzamento()) {
-            List<EstradaCelula> cruzamentoEstradas = primeiraEstradaCruzamento.getCruzamentos();
+            List<EstradaCelula> estradasAtravessarCruzamento = primeiraEstradaCruzamento.getListaEstradaAtrevessarCruzamento();
             if(exclusaoMutuaTipo == ExclusaoMutuaTipo.MONITOR){
-                monitorPercorrerCruzamento(cruzamentoEstradas);
+                monitorPercorrerCruzamento(estradasAtravessarCruzamento);
             } else {
-                List<EstradaCelula> cruzamentosReservados = getCruzamentosReservados(cruzamentoEstradas);
+                List<EstradaCelula> estradasCruzamentoReservados = getCruzamentosReservados(estradasAtravessarCruzamento);
 
-            System.out.println("Carro: "+this.getName()+"cruzamentos: "+cruzamentoEstradas.size()+"reservados: "+cruzamentosReservados.size());
-
-                if (cruzamentoEstradas.size() == cruzamentosReservados.size()) {
-                    for (EstradaCelula e : cruzamentoEstradas) {
+                if (estradasAtravessarCruzamento.size() == estradasCruzamentoReservados.size()) {
+                    for (EstradaCelula e : estradasAtravessarCruzamento) {
                         moverParaCelula(e, false);
-                        // TODO: ver melhor forma de resolver isso, talvez retirar a ultima estrada
-                        // da lista de cruzamentoEstradas, que é a primeira estrada pós cruzamento
                         if (e.isCruzamento()) {
                             atualizarInterfaceGrafica();
                             Thread.sleep(this.velocidade);
@@ -110,9 +103,9 @@ public class Carro extends Thread {
         }
     }
 
-    private List<EstradaCelula> getCruzamentosReservados(List<EstradaCelula> cruzamentoEstradas) {
+    private List<EstradaCelula> getCruzamentosReservados(List<EstradaCelula> estradasAtravessarCruzamento) {
         ArrayList<EstradaCelula> cruzamentosReservados = new ArrayList<>();
-        for (EstradaCelula cruzamentoTentaReservar : cruzamentoEstradas) {
+        for (EstradaCelula cruzamentoTentaReservar : estradasAtravessarCruzamento) {
             if (cruzamentoTentaReservar.tentarEntrarEstrada()) {
                 cruzamentosReservados.add(cruzamentoTentaReservar);
             } else {
@@ -131,16 +124,21 @@ public class Carro extends Thread {
 
     private void moverParaCelula(EstradaCelula est, boolean testar){
         if (exclusaoMutuaTipo == ExclusaoMutuaTipo.MONITOR){
-            monitorMoverParaCelular(est);
+            monitorMoverParaCelula(est);
         } else {
-
             boolean reservado = false;
             if (testar) {
-                do {
-                    if (est.tentarEntrarEstrada()) {
-                        reservado = true;
-                    }
-                } while (!reservado);
+                try {
+                    do {
+                        if (est.tentarEntrarEstrada()) {
+                            reservado = true;
+                        } else {
+                                sleep(random.nextInt(500)); // Solução funcional jantar dos filosofos
+                        }
+                    } while (!reservado);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
 
             estrada.setCarro(null);
@@ -150,7 +148,7 @@ public class Carro extends Thread {
         }
     }
 
-    private void monitorMoverParaCelular(EstradaCelula est) {
+    private void monitorMoverParaCelula(EstradaCelula est) {
         synchronized (moverEstradaNormal) {
             estrada.setCarro(null);
             est.setCarro(this);

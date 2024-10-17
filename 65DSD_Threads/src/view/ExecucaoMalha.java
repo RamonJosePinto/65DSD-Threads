@@ -8,7 +8,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.event.ChangeListener;
 
-import model.MalhaCellRenderer;
 import model.MalhaTableModel;
 
 import java.awt.event.ActionListener;

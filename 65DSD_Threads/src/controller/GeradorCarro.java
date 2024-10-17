@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Random;
 import model.Carro;
 import model.EstradaCelula;
-import model.ExclusaoMutuaTipo;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -44,8 +43,7 @@ public class GeradorCarro extends Thread {
                     estradaEntrada.setCarro(carro);
                     controller.getVeiculosMalha().add(carro);
 
-                    estradaEntrada.getMalha().fireTableCellUpdated(estradaEntrada.getLin(), estradaEntrada.getCol());
-
+                    carro.atualizarInterfaceGrafica(); // TODO
                     carro.start();
                     carro.atualizarInterfaceGrafica();
 

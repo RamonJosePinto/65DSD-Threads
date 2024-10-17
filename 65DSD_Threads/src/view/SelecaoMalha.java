@@ -10,7 +10,6 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-import model.MalhaCellRenderer;
 import model.MalhaTableModel;
 
 /**

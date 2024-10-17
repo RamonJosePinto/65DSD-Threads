@@ -25,7 +25,7 @@ public class EstradaCelula {
         this.random = new Random();
     }
 
-    public List<EstradaCelula> getCruzamentos() {
+    public List<EstradaCelula> getListaEstradaAtrevessarCruzamento() {
         List<EstradaCelula> caminhoCruzamento = new ArrayList<>();
         EstradaCelula proximaEstrada = this;
         caminhoCruzamento.add(this);
@@ -84,7 +84,6 @@ public class EstradaCelula {
 
             // Se a nova estrada já foi percorrida, remove essa direção das possibilidades
             if (caminhoCruzamento.contains(novaEstrada)) {
-                System.out.println("Ele tentou ir para uma casa já visitada");
                 direcoesPossiveis.remove(Integer.valueOf(direcaoEscolhida));
                 novaEstrada = null; // Resetar para continuar tentando
             } else {
