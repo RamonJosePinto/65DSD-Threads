@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Random;
 import model.Carro;
 import model.EstradaCelula;
+import model.ExclusaoMutuaTipo;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -39,7 +40,11 @@ public class GeradorCarro extends Thread {
                     EstradaCelula estradaEntrada = celulasEntrada.get(new Random().nextInt(celulasEntrada.size()));
 
                     Carro carro = new Carro(estradaEntrada, controller.getExclusaoMutuaTipo(), controller);
-                    estradaEntrada.tentarEntrarEstrada();
+                    if(controller.getExclusaoMutuaTipo() == ExclusaoMutuaTipo.SEMAFORO) {
+                        estradaEntrada.tentarEntrarEstrada();
+                    } else {
+                        estradaEntrada.getLock().lock();
+                    }
                     estradaEntrada.setCarro(carro);
                     controller.getVeiculosMalha().add(carro);
 

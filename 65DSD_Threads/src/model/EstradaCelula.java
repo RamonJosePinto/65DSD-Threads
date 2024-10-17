@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class EstradaCelula {
     private Random random;
@@ -14,6 +15,7 @@ public class EstradaCelula {
     private MalhaTableModel malha;
     private boolean cruzamento;
     private Semaphore mutex;
+    private final ReentrantLock lock = new ReentrantLock(); // MONITOR
 
     public EstradaCelula(int direcao, MalhaTableModel malha, int lin, int col, boolean cruzamento) {
         this.direcao = direcao;
@@ -23,6 +25,10 @@ public class EstradaCelula {
         this.cruzamento = cruzamento;
         this.mutex = new Semaphore(1);
         this.random = new Random();
+    }
+
+    public ReentrantLock getLock() {
+        return lock;
     }
 
     public List<EstradaCelula> getListaEstradaAtrevessarCruzamento() {

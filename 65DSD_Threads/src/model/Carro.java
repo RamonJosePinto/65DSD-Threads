@@ -63,21 +63,32 @@ public class Carro extends Thread {
     public void removerCarroMalha() {
         estrada.setCarro(null);
         controller.removerCarroMalha(this);
-        estrada.liberarEstrada();
+        if(exclusaoMutuaTipo == ExclusaoMutuaTipo.SEMAFORO) {
+            estrada.liberarEstrada();
+        } else {
+            estrada.getLock().unlock();
+        }
         atualizarInterfaceGrafica();
     }
 
-    public void monitorPercorrerCruzamento(List<EstradaCelula> estradasAtravessarCruzamento) throws InterruptedException {
-        synchronized (cruzamentoMonitor) {
-            System.out.println("Ele ta no cruzamento monitor");
-            for (EstradaCelula e : estradasAtravessarCruzamento) {
-                moverParaCelula(e, false);
-                if (e.isCruzamento()) {
-                    atualizarInterfaceGrafica();
-                    Thread.sleep(this.velocidade);
-                }
+    public List<EstradaCelula> monitorPercorrerCruzamento(List<EstradaCelula> estradasAtravessarCruzamento) {
+        List<EstradaCelula> cruzamentosReservados = new ArrayList<>();
+        for (EstradaCelula e : estradasAtravessarCruzamento) {
+            if (e.getLock().tryLock()) {
+                cruzamentosReservados.add(e);
+            } else {
+                liberarCruzamentosReservados(cruzamentosReservados);
+                break;
             }
         }
+        return cruzamentosReservados;
+    }
+
+    private void liberarCruzamentosReservados(List<EstradaCelula> cruzamentosReservados) {
+        for (EstradaCelula e : cruzamentosReservados) {
+            e.getLock().unlock();
+        }
+        cruzamentosReservados.clear();
     }
 
     private void percorrerCruzamento() throws InterruptedException {
@@ -85,18 +96,21 @@ public class Carro extends Thread {
 
         if (primeiraEstradaCruzamento.isCruzamento()) {
             List<EstradaCelula> estradasAtravessarCruzamento = primeiraEstradaCruzamento.getListaEstradaAtrevessarCruzamento();
-            if(exclusaoMutuaTipo == ExclusaoMutuaTipo.MONITOR){
-                monitorPercorrerCruzamento(estradasAtravessarCruzamento);
-            } else {
-                List<EstradaCelula> estradasCruzamentoReservados = getCruzamentosReservados(estradasAtravessarCruzamento);
 
-                if (estradasAtravessarCruzamento.size() == estradasCruzamentoReservados.size()) {
-                    for (EstradaCelula e : estradasAtravessarCruzamento) {
-                        moverParaCelula(e, false);
-                        if (e.isCruzamento()) {
-                            atualizarInterfaceGrafica();
-                            Thread.sleep(this.velocidade);
-                        }
+            List<EstradaCelula> estradasCruzamentoReservados = null;
+
+            if(exclusaoMutuaTipo == ExclusaoMutuaTipo.MONITOR){
+                estradasCruzamentoReservados = monitorPercorrerCruzamento(estradasAtravessarCruzamento);
+            } else {
+                estradasCruzamentoReservados = getCruzamentosReservados(estradasAtravessarCruzamento);
+            }
+
+            if (estradasAtravessarCruzamento.size() == estradasCruzamentoReservados.size()) {
+                for (EstradaCelula e : estradasAtravessarCruzamento) {
+                    moverParaCelula(e, false);
+                    if (e.isCruzamento()) {
+                        atualizarInterfaceGrafica();
+                        Thread.sleep(this.velocidade);
                     }
                 }
             }
@@ -122,38 +136,42 @@ public class Carro extends Thread {
         }
     }
 
-    private void moverParaCelula(EstradaCelula est, boolean testar){
-        if (exclusaoMutuaTipo == ExclusaoMutuaTipo.MONITOR){
-            monitorMoverParaCelula(est);
-        } else {
-            boolean reservado = false;
-            if (testar) {
-                try {
-                    do {
+    private void moverParaCelula(EstradaCelula est, boolean testar) {
+        boolean reservado = false;
+
+        if (testar) {
+            try {
+                do {
+                    if (exclusaoMutuaTipo == ExclusaoMutuaTipo.MONITOR) {
+                        // MONITOR
+                        if (est.getLock().tryLock()) {
+                            reservado = true;
+                        } else {
+                            sleep(random.nextInt(500));
+                        }
+                    } else {
+                        // SEMAFORO
                         if (est.tentarEntrarEstrada()) {
                             reservado = true;
                         } else {
-                                sleep(random.nextInt(500)); // Solução funcional jantar dos filosofos
+                            sleep(random.nextInt(500));
                         }
-                    } while (!reservado);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
+                    }
+                } while (!reservado);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
+        }
 
-            estrada.setCarro(null);
-            est.setCarro(this);
+        if (exclusaoMutuaTipo == ExclusaoMutuaTipo.MONITOR && estrada.getLock().isHeldByCurrentThread()) {
+            estrada.getLock().unlock();
+        } else if(exclusaoMutuaTipo == ExclusaoMutuaTipo.SEMAFORO) {
             estrada.liberarEstrada();
-            estrada = est;
         }
-    }
 
-    private void monitorMoverParaCelula(EstradaCelula est) {
-        synchronized (moverEstradaNormal) {
-            estrada.setCarro(null);
-            est.setCarro(this);
-            estrada = est;
-        }
+        estrada.setCarro(null);
+        est.setCarro(this);
+        estrada = est;
     }
 
 
