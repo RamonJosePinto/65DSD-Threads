@@ -5,12 +5,14 @@
 package controller;
 
 import java.io.IOException;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 import model.ExclusaoMutuaTipo;
 import model.MalhaTableModel;
 import view.ExecucaoMalha;
 import view.SelecaoMalha;
+import java.io.File;
 
 /**
  *
@@ -25,8 +27,6 @@ public class SelecaoMalhaController {
 
     public SelecaoMalhaController(SelecaoMalha tela) {
         this.telaSelecao = tela;
-        this.telaSelecao.getRadioMalha1().setSelected(true);
-        acaoSelecionarMalha(1);
         this.setDefaultRadioButtonSelected();
         inicializarBotoes();
     }
@@ -50,25 +50,26 @@ public class SelecaoMalhaController {
         fecharTela();
     }
 
-    public void acaoSelecionarMalha(int opcao) {
+    private void inicializarBotoes() {
+        telaSelecao.adicionarAcaoBotaoConfirmar(acao -> acaoBotaoConfirmar());
+        telaSelecao.adicionarAcaoBotaoSelecionar(acao -> acaoSelecionarArquivo());
+        telaSelecao.adicionarAcaoRadioExclusaoMutua1(acao -> acaoSelecionarExclusaoMutua(ExclusaoMutuaTipo.SEMAFORO));
+        telaSelecao.adicionarAcaoRadioExclusaoMutua2(acao -> acaoSelecionarExclusaoMutua(ExclusaoMutuaTipo.MONITOR));
+    }
+
+    private void acaoSelecionarArquivo() {
+        JFileChooser fileChooser = new JFileChooser();
+        int returnValue = fileChooser.showOpenDialog(null);
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            malhaSelecionada = selectedFile.getAbsolutePath();
+            telaSelecao.getSelectFileTextField().setText(malhaSelecionada);
+            carregarMalha();
+        }
+    }
+
+    private void carregarMalha() {
         try {
-            switch (opcao) {
-                case 1:
-                    malhaSelecionada = "src/files/malha1.txt";
-                    break;
-                case 2:
-                    malhaSelecionada = "src/files/malha2.txt";
-                    break;
-                case 3:
-                    malhaSelecionada = "src/files/malha3.txt";
-                    break;
-                default:
-                    throw new IllegalArgumentException("Opção inválida de malha");
-            }
-
-            // Atualiza a malha selecionada
-            setMalhaSelecionada(malhaSelecionada);
-
             // Carregar a malha no MalhaTableModel e definir na tabela
             malhaTableModel = new MalhaTableModel(malhaSelecionada);
             telaSelecao.setTableModel(malhaTableModel);
@@ -76,15 +77,6 @@ public class SelecaoMalhaController {
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Erro ao carregar a malha: " + e.getMessage());
         }
-    }
-
-private void inicializarBotoes() {
-        telaSelecao.adicionarAcaoBotaoConfirmar(acao -> acaoBotaoConfirmar());
-        telaSelecao.adicionarAcaoRadioMalha1(acao -> acaoSelecionarMalha(1));
-        telaSelecao.adicionarAcaoRadioMalha2(acao -> acaoSelecionarMalha(2));
-        telaSelecao.adicionarAcaoRadioMalha3(acao -> acaoSelecionarMalha(3));
-        telaSelecao.adicionarAcaoRadioExclusaoMutua1(acao -> acaoSelecionarExclusaoMutua(ExclusaoMutuaTipo.SEMAFORO));
-        telaSelecao.adicionarAcaoRadioExclusaoMutua2(acao -> acaoSelecionarExclusaoMutua(ExclusaoMutuaTipo.MONITOR));
     }
 
     private void acaoSelecionarExclusaoMutua(ExclusaoMutuaTipo tipo) {
@@ -98,14 +90,14 @@ private void inicializarBotoes() {
     public void setMalhaSelecionada(String malhaSelecionada) {
         this.malhaSelecionada = malhaSelecionada;
     }
-    
+
     public void setMalhaTableModel(MalhaTableModel malhaTableModel) {
-    this.malhaTableModel = malhaTableModel;
-    
-    // Define o modelo da tabela
-    telaSelecao.setTableModel(malhaTableModel);
-    telaSelecao.getTableMalha().setTableHeader(null);
-}
+        this.malhaTableModel = malhaTableModel;
+
+        // Define o modelo da tabela
+        telaSelecao.setTableModel(malhaTableModel);
+        telaSelecao.getTableMalha().setTableHeader(null);
+    }
 
     public ExclusaoMutuaTipo getExclusaoMutuaTipo() {
         return exclusaoMutuaTipo;
